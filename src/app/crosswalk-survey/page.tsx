@@ -4,6 +4,22 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+
+const LOCATION_OPTIONS = [
+  {
+    id: "imunro34",
+    label: "이문로34길 사거리",
+    desc: "파크빌 · 페몬트 · 금토부동산 근처",
+    image: "/map-imunro34.png",
+  },
+  {
+    id: "cheonjangsanro",
+    label: "이문로·천장산로 사거리",
+    desc: "밝은성모안과 · 빽다방 · 이문센트럴정형외과 근처",
+    image: "/map-cheonjangsanro.png",
+  },
+] as const;
 
 type IssueType =
   | "signal_timing"
@@ -55,8 +71,8 @@ export default function SurveyPage() {
     e.preventDefault();
     setError("");
 
-    if (!form.location.trim()) {
-      setError("불편한 위치를 입력해주세요.");
+    if (!form.location) {
+      setError("불편한 위치를 선택해주세요.");
       return;
     }
     if (form.issueTypes.length === 0) {
@@ -69,7 +85,7 @@ export default function SurveyPage() {
     const { error: dbError } = await supabase
       .from("survey_responses")
       .insert({
-        location: form.location.trim(),
+        location: LOCATION_OPTIONS.find((o) => o.id === form.location)?.label ?? form.location,
         issue_types: form.issueTypes,
         detail: form.detail.trim() || null,
         respondent_name: form.name.trim() || null,
@@ -134,7 +150,7 @@ export default function SurveyPage() {
         onSubmit={handleSubmit}
         className="mx-auto -mt-8 max-w-2xl rounded-2xl bg-white px-6 py-10 shadow-xl md:px-10"
       >
-        {/* Q1 - Location */}
+        {/* Q1 - Location (map selection) */}
         <fieldset className="mb-8">
           <legend className="mb-3 flex items-center gap-2 text-lg font-bold text-sky-800">
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-sm font-black text-white">
@@ -143,13 +159,46 @@ export default function SurveyPage() {
             불편한 위치가 어디인가요?
             <span className="text-party-red">*</span>
           </legend>
-          <input
-            type="text"
-            value={form.location}
-            onChange={(e) => setForm({ ...form, location: e.target.value })}
-            placeholder="예: 이문사거리, 외대앞사거리, 이문로 OO번지 앞 등"
-            className="w-full rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
-          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            {LOCATION_OPTIONS.map(({ id, label, desc, image }) => (
+              <label
+                key={id}
+                className={`cursor-pointer overflow-hidden rounded-2xl border-3 transition ${
+                  form.location === id
+                    ? "border-sky-500 shadow-lg shadow-sky-500/20"
+                    : "border-sky-100 hover:border-sky-200"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="location"
+                  value={id}
+                  checked={form.location === id}
+                  onChange={() => setForm({ ...form, location: id })}
+                  className="sr-only"
+                />
+                <div className="relative aspect-square w-full bg-sky-50">
+                  <Image
+                    src={image}
+                    alt={label}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <p className={`font-bold ${form.location === id ? "text-sky-700" : "text-sky-800"}`}>
+                    {label}
+                  </p>
+                  <p className="mt-1 text-xs text-sky-500">{desc}</p>
+                </div>
+                {form.location === id && (
+                  <div className="bg-sky-500 px-4 py-1.5 text-center text-xs font-bold text-white">
+                    선택됨
+                  </div>
+                )}
+              </label>
+            ))}
+          </div>
         </fieldset>
 
         {/* Q2 - Issue Types */}
