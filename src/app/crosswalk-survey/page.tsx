@@ -4,7 +4,6 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 const LOCATION_OPTIONS = [
   {
@@ -177,14 +176,12 @@ export default function SurveyPage() {
                   onChange={() => setForm({ ...form, location: id })}
                   className="sr-only"
                 />
-                <div className="relative aspect-square w-full bg-sky-50">
-                  <Image
-                    src={image}
-                    alt={label}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image}
+                  alt={label}
+                  className="aspect-square w-full object-cover bg-sky-50"
+                />
                 <div className="p-4">
                   <p className={`font-bold ${form.location === id ? "text-sky-700" : "text-sky-800"}`}>
                     {label}
