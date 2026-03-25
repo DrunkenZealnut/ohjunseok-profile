@@ -182,17 +182,25 @@ export default function SurveyPage() {
                   alt={label}
                   className="aspect-square w-full object-cover bg-sky-50"
                 />
-                <div className="p-4">
-                  <p className={`font-bold ${form.location === id ? "text-sky-700" : "text-sky-800"}`}>
-                    {label}
-                  </p>
-                  <p className="mt-1 text-xs text-sky-500">{desc}</p>
-                </div>
-                {form.location === id && (
-                  <div className="bg-sky-500 px-4 py-1.5 text-center text-xs font-bold text-white">
-                    선택됨
+                <div className="flex items-center gap-3 p-4">
+                  <span
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                      form.location === id
+                        ? "border-sky-500 bg-sky-500"
+                        : "border-sky-300"
+                    }`}
+                  >
+                    {form.location === id && (
+                      <span className="h-2 w-2 rounded-full bg-white" />
+                    )}
+                  </span>
+                  <div>
+                    <p className={`font-bold ${form.location === id ? "text-sky-700" : "text-sky-800"}`}>
+                      {label}
+                    </p>
+                    <p className="mt-0.5 text-xs text-sky-500">{desc}</p>
                   </div>
-                )}
+                </div>
               </label>
             ))}
           </div>
