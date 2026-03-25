@@ -20,9 +20,10 @@ export default function Hero() {
         오준석
       </h1>
 
-      {/* Photo placeholder */}
-      <div className="relative z-10 mb-8 flex h-56 w-56 items-center justify-center overflow-hidden rounded-full border-[6px] border-white/80 bg-gradient-to-br from-white to-sky-100 shadow-2xl md:h-72 md:w-72">
-        <span className="text-7xl text-sky-500 md:text-8xl">👤</span>
+      {/* Profile photo */}
+      <div className="relative z-10 mb-8 h-56 w-56 overflow-hidden rounded-full border-[6px] border-white/80 shadow-2xl md:h-72 md:w-72">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/profile.jpg" alt="오준석 후보" className="h-full w-full object-cover" />
       </div>
 
       <div className="relative z-10 rounded-xl bg-white/85 px-10 py-4 shadow-lg">

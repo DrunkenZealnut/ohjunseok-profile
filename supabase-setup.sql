@@ -23,3 +23,25 @@ CREATE POLICY "allow_anon_insert" ON public.survey_responses
 CREATE POLICY "allow_service_select" ON public.survey_responses
   FOR SELECT TO service_role
   USING (true);
+
+-- ========================================
+-- 응원 메시지 테이블
+-- ========================================
+CREATE TABLE IF NOT EXISTS public.cheers (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  name text,
+  message text NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE public.cheers ENABLE ROW LEVEL SECURITY;
+
+-- 익명 사용자 INSERT 허용 (응원 제출용)
+CREATE POLICY "allow_anon_insert_cheers" ON public.cheers
+  FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- 서비스 롤 전체 조회 허용 (관리자용)
+CREATE POLICY "allow_service_select_cheers" ON public.cheers
+  FOR SELECT TO service_role
+  USING (true);

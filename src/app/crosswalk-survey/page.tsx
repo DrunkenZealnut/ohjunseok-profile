@@ -137,7 +137,7 @@ export default function SurveyPage() {
           불편한 신호등·횡단보도 개선 주민 의견 받습니다
         </p>
         <p className="text-sm text-sky-700 md:text-base">
-          의견을 종합해 동대문경찰서에 전달하고 개선을 위해 힘쓰겠습니다.
+          의견을 종합해 구청과 경찰서에 전달하고 개선을 위해 힘쓰겠습니다.
         </p>
         <div className="mt-4 inline-block rounded-md bg-party-red px-4 py-1.5 text-xs font-bold tracking-wider text-white">
           진보당 이문동 구의원 후보 오준석
