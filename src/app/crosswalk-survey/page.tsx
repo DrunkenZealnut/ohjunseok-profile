@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
-import Link from "next/link";
+
 
 const LOCATION_OPTIONS = [
   {
@@ -115,12 +115,12 @@ export default function SurveyPage() {
             <br />
             개선을 위해 힘쓰겠습니다.
           </p>
-          <Link
-            href="/"
+          <a
+            href="https://ohjunseok-profile.vercel.app"
             className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-sky-600 px-8 py-3 font-bold text-white shadow-lg transition hover:-translate-y-0.5"
           >
             홈으로 돌아가기
-          </Link>
+          </a>
         </div>
       </div>
     );
