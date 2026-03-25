@@ -21,19 +21,19 @@ const LOCATION_OPTIONS = [
 ] as const;
 
 type IssueType =
-  | "signal_timing"
-  | "crosswalk_safety"
-  | "signal_missing"
-  | "crosswalk_missing"
-  | "visibility"
+  | "signal_system"
+  | "crosswalk_danger"
+  | "signal_timer"
+  | "night_lighting"
+  | "bench_needed"
   | "other";
 
 const ISSUE_OPTIONS: { value: IssueType; label: string }[] = [
-  { value: "signal_timing", label: "신호 대기 시간이 너무 길다" },
-  { value: "crosswalk_safety", label: "횡단보도가 위험하다" },
-  { value: "signal_missing", label: "신호등이 필요한 곳에 없다" },
-  { value: "crosswalk_missing", label: "횡단보도가 필요한 곳에 없다" },
-  { value: "visibility", label: "신호등이 잘 보이지 않는다" },
+  { value: "signal_system", label: "신호체계에 문제가 있다" },
+  { value: "crosswalk_danger", label: "횡단보도 주변이 위험하다" },
+  { value: "signal_timer", label: "신호등 타이머가 필요하다" },
+  { value: "night_lighting", label: "야간에 조명이 필요하다" },
+  { value: "bench_needed", label: "잠시 앉아있을 의자가 필요하다" },
   { value: "other", label: "기타" },
 ];
 
