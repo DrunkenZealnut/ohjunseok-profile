@@ -9,7 +9,7 @@ const LOCATION_OPTIONS = [
   {
     id: "imunro34",
     label: "이문로34길 사거리",
-    desc: "파크빌 · 페몬트 · 금토부동산 근처",
+    desc: "이문교회앞",
     image: "/map-imunro34.png",
   },
   {
@@ -139,9 +139,7 @@ export default function SurveyPage() {
         <p className="text-sm text-sky-700 md:text-base">
           의견을 종합해 구청과 경찰서에 전달하고 개선을 위해 힘쓰겠습니다.
         </p>
-        <div className="mt-4 inline-block rounded-lg bg-party-red px-6 py-2.5 text-base font-black tracking-wider text-white md:text-lg">
-          진보당 이문동 구의원 후보 오준석
-        </div>
+
       </header>
 
       {/* Survey Form */}
