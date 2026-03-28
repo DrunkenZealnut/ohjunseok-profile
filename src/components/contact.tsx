@@ -31,6 +31,17 @@ export default function Contact() {
       return;
     }
 
+    // 이메일 알림 (실패해도 응원 제출 성공 처리)
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "cheer",
+        message: message.trim(),
+        name: name.trim() || null,
+      }),
+    }).catch(() => {});
+
     setSubmitted(true);
   }
 

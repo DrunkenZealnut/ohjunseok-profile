@@ -99,6 +99,22 @@ export default function SurveyPage() {
       return;
     }
 
+    // 이메일 알림 (실패해도 설문 제출 성공 처리)
+    fetch("/api/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "survey",
+        location: LOCATION_OPTIONS.find((o) => o.id === form.location)?.label ?? form.location,
+        issueTypes: form.issueTypes.map(
+          (t) => ISSUE_OPTIONS.find((o) => o.value === t)?.label ?? t
+        ),
+        detail: form.detail.trim() || null,
+        name: form.name.trim() || null,
+        phone: form.phone.trim() || null,
+      }),
+    }).catch(() => {});
+
     setSubmitted(true);
   }
 
