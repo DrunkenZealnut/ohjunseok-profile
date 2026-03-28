@@ -1,6 +1,7 @@
 import Hero from "@/components/hero";
 import Profile from "@/components/profile";
 import Values from "@/components/values";
+import NewsPreview from "@/components/news-preview";
 import Pledges from "@/components/pledges";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
@@ -11,6 +12,7 @@ export default function Home() {
       <Hero />
       <Profile />
       <Values />
+      <NewsPreview />
       <Pledges />
       <Contact />
       <Footer />

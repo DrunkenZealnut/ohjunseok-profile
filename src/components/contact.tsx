@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Heart, Send } from "lucide-react";
+import CheerList from "./cheer-list";
 
 export default function Contact() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -31,7 +32,6 @@ export default function Contact() {
       return;
     }
 
-    // 이메일 알림 (실패해도 응원 제출 성공 처리)
     fetch("/api/notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,7 +42,9 @@ export default function Contact() {
       }),
     }).catch((err) => console.error("Email notify failed:", err));
 
-    setSubmitted(true);
+    setMessage("");
+    setName("");
+    setRefreshKey((k) => k + 1);
   }
 
   return (
@@ -57,56 +59,44 @@ export default function Contact() {
         따뜻한 한마디가 큰 힘이 됩니다.
       </p>
 
-      {submitted ? (
-        <div className="mx-auto max-w-md rounded-2xl bg-sky-50 p-8">
-          <Heart className="mx-auto mb-3 h-12 w-12 text-pink-500" />
-          <p className="text-lg font-bold text-sky-800">
-            응원 감사합니다!
-          </p>
-          <p className="mt-2 text-sm text-sky-600">
-            주민과 함께 더 나은 이문동을 만들겠습니다.
-          </p>
-        </div>
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          className="mx-auto max-w-md space-y-4"
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto max-w-md space-y-4"
+      >
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="이름 (선택사항)"
+          className="w-full rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
+        />
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="응원 메시지를 남겨주세요"
+          rows={3}
+          className="w-full resize-none rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
+        />
+
+        {error && <p className="text-sm text-red-500">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={submitting || !message.trim()}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-sky-600 py-4 text-lg font-bold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:hover:translate-y-0"
         >
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="이름 (선택사항)"
-            className="w-full rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
-          />
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="응원 메시지를 남겨주세요"
-            rows={3}
-            className="w-full resize-none rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
-          />
-
-          {error && (
-            <p className="text-sm text-red-500">{error}</p>
+          {submitting ? (
+            "보내는 중..."
+          ) : (
+            <>
+              <Send className="h-5 w-5" />
+              응원 보내기
+            </>
           )}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={submitting || !message.trim()}
-            className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-500 to-sky-600 py-4 text-lg font-bold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5 hover:shadow-xl disabled:opacity-50 disabled:hover:translate-y-0"
-          >
-            {submitting ? (
-              "보내는 중..."
-            ) : (
-              <>
-                <Send className="h-5 w-5" />
-                응원 보내기
-              </>
-            )}
-          </button>
-        </form>
-      )}
+      <CheerList refreshKey={refreshKey} />
     </section>
   );
 }
