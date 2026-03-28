@@ -130,6 +130,9 @@ export default function SurveyPage() {
     <div className="min-h-screen bg-sky-50 pb-20">
       {/* Header */}
       <header className="bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 px-5 py-16 text-center">
+        <span className="mb-4 inline-block rounded-full bg-party-red px-5 py-1.5 text-sm font-bold text-white">
+          진보당 동대문구위원회
+        </span>
         <h1 className="mb-3 text-4xl font-black text-sky-900 md:text-5xl">
           바로 이 사거리!
         </h1>
