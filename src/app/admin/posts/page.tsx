@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { adminGet, adminPost, adminPut, adminDelete } from "@/lib/admin-fetch";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 
@@ -29,14 +29,14 @@ export default function AdminPosts() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  function load() {
+  const load = useCallback(() => {
     adminGet(`table=posts&page=${page}`).then((res) => {
       setItems(res.data);
       setCount(res.count);
     });
-  }
+  }, [page]);
 
-  useEffect(() => { load(); }, [page]);
+  useEffect(() => { load(); }, [load]);
 
   function openNew() {
     setForm(EMPTY_FORM);

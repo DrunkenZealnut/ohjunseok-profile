@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { adminGet, adminDelete } from "@/lib/admin-fetch";
 import { Trash2 } from "lucide-react";
 
@@ -16,14 +16,14 @@ export default function AdminCheers() {
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
 
-  function load() {
+  const load = useCallback(() => {
     adminGet(`table=cheers&page=${page}`).then((res) => {
       setItems(res.data);
       setCount(res.count);
     });
-  }
+  }, [page]);
 
-  useEffect(() => { load(); }, [page]);
+  useEffect(() => { load(); }, [load]);
 
   async function handleDelete(id: string) {
     if (!confirm("이 응원 메시지를 삭제하시겠습니까?")) return;

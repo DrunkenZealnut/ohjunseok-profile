@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, getTokenFromRequest } from "@/lib/admin-auth";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const ALLOWED_TABLES = ["survey_responses", "cheers", "opinions", "poll_observers", "posts"];
 const DELETABLE_TABLES = ["posts", "cheers", "opinions"];
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   if (action === "counts") {
     const counts: Record<string, number> = {};
     for (const table of ALLOWED_TABLES) {
-      const { count } = await supabaseAdmin
+      const { count } = await getSupabaseAdmin()
         .from(table)
         .select("*", { count: "exact", head: true });
       counts[table] = count ?? 0;
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   const limit = Number(searchParams.get("limit") || "20");
   const from = (page - 1) * limit;
 
-  const { data, count } = await supabaseAdmin
+  const { data, count } = await getSupabaseAdmin()
     .from(table)
     .select("*", { count: "exact" })
     .order("created_at", { ascending: false })
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Only posts can be created" }, { status: 400 });
   }
 
-  const { data: result, error } = await supabaseAdmin.from("posts").insert(data).select().single();
+  const { data: result, error } = await getSupabaseAdmin().from("posts").insert(data).select().single();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Only posts can be updated" }, { status: 400 });
   }
 
-  const { data: result, error } = await supabaseAdmin
+  const { data: result, error } = await getSupabaseAdmin()
     .from("posts")
     .update(data)
     .eq("id", id)
@@ -107,7 +107,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Invalid table or id" }, { status: 400 });
   }
 
-  const { error } = await supabaseAdmin.from(table).delete().eq("id", id);
+  const { error } = await getSupabaseAdmin().from(table).delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

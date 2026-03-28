@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Heart, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import CheerList from "./cheer-list";
 
 export default function Contact() {
