@@ -115,12 +115,12 @@ export default function SurveyPage() {
             <br />
             개선을 위해 힘쓰겠습니다.
           </p>
-          <a
-            href="https://ohjunseok-profile.vercel.app"
+          <button
+            onClick={() => window.location.reload()}
             className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-sky-600 px-8 py-3 font-bold text-white shadow-lg transition hover:-translate-y-0.5"
           >
-            홈으로 돌아가기
-          </a>
+            다른 의견 제출하기
+          </button>
         </div>
       </div>
     );
