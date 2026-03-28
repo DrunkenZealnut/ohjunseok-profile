@@ -113,7 +113,7 @@ export default function SurveyPage() {
         name: form.name.trim() || null,
         phone: form.phone.trim() || null,
       }),
-    }).catch(() => {});
+    }).catch((err) => console.error("Email notify failed:", err));
 
     setSubmitted(true);
   }

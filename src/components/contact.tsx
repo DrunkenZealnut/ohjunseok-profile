@@ -40,7 +40,7 @@ export default function Contact() {
         message: message.trim(),
         name: name.trim() || null,
       }),
-    }).catch(() => {});
+    }).catch((err) => console.error("Email notify failed:", err));
 
     setSubmitted(true);
   }

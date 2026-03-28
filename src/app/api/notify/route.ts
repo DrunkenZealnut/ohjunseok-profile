@@ -1,18 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_SMTP_HOST,
-  port: Number(process.env.MAIL_SMTP_PORT) || 587,
-  secure: false,
-  auth: {
-    user: process.env.MAIL_SMTP_USERNAME,
-    pass: process.env.MAIL_SMTP_PASSWORD,
-  },
-});
+function createTransporter() {
+  const host = process.env.MAIL_SMTP_HOST;
+  const user = process.env.MAIL_SMTP_USERNAME;
+  const pass = process.env.MAIL_SMTP_PASSWORD;
+
+  if (!host || !user || !pass) {
+    console.error("Missing SMTP env vars:", { host: !!host, user: !!user, pass: !!pass });
+    return null;
+  }
+
+  return nodemailer.createTransport({
+    host,
+    port: Number(process.env.MAIL_SMTP_PORT) || 587,
+    secure: false,
+    auth: { user, pass },
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const transporter = createTransporter();
+    if (!transporter) {
+      return NextResponse.json({ error: "SMTP not configured" }, { status: 500 });
+    }
+
     const body = await request.json();
     const { type } = body;
 
