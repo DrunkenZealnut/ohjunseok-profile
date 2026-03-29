@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { adminGet } from "@/lib/admin-fetch";
 
+const ISSUE_LABELS: Record<string, string> = {
+  signal_system: "신호체계 문제",
+  crosswalk_danger: "횡단보도 위험",
+  signal_timer: "신호등 타이머",
+  night_lighting: "야간 조명",
+  bench_needed: "의자 필요",
+  other: "기타",
+};
+
 interface Survey {
   id: string;
   location: string;
@@ -39,7 +48,7 @@ export default function AdminSurveys() {
             <p className="font-bold text-gray-800">{s.location}</p>
             <div className="mt-1 flex flex-wrap gap-1">
               {(s.issue_types || []).map((t: string) => (
-                <span key={t} className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-700">{t}</span>
+                <span key={t} className="rounded-full bg-sky-100 px-2 py-0.5 text-xs text-sky-700">{ISSUE_LABELS[t] || t}</span>
               ))}
             </div>
             {s.detail && <p className="mt-2 text-sm text-gray-600">{s.detail}</p>}
