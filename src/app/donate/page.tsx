@@ -266,7 +266,7 @@ export default function DonatePage() {
               onChange={(e) =>
                 setForm({ ...form, amount: formatAmount(e.target.value) })
               }
-              placeholder="50,000"
+              placeholder="100,000"
               className="w-full rounded-xl border-2 border-sky-200 px-4 py-3 pr-10 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-sky-400">
