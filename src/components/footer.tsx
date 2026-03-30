@@ -1,20 +1,16 @@
 import Link from "next/link";
-import ShareButton from "./share-button";
 
 const FOOTER_LINKS = [
   { label: "활동 소식", href: "/news" },
   { label: "주민 의견함", href: "/opinions" },
-  { label: "참관인 신청", href: "/observer" },
-  { label: "설문", href: "/crosswalk-survey" },
+  // { label: "참관인 신청", href: "/observer" },
+  // { label: "설문", href: "/crosswalk-survey" },
+  { label: "후원인 정보입력", href: "/donate" },
 ] as const;
 
 export default function Footer() {
   return (
     <footer className="bg-sky-800 px-5 py-10 text-center">
-      <div className="mb-6">
-        <ShareButton />
-      </div>
-
       <nav className="mb-6 flex flex-wrap justify-center gap-4">
         {FOOTER_LINKS.map(({ label, href }) => (
           <Link

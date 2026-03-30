@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Send } from "lucide-react";
+
 import CheerList from "./cheer-list";
 
 export default function Contact() {

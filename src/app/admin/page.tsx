@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Vote,
   FileText,
+  HandHeart,
 } from "lucide-react";
 
 const CARDS = [
@@ -17,6 +18,7 @@ const CARDS = [
   { key: "opinions", label: "주민 의견", href: "/admin/opinions", icon: MessageSquare, color: "from-emerald-500 to-emerald-600" },
   { key: "poll_observers", label: "참관인 신청", href: "/admin/observers", icon: Vote, color: "from-violet-500 to-violet-600" },
   { key: "posts", label: "소식", href: "/admin/posts", icon: FileText, color: "from-amber-500 to-amber-600" },
+  { key: "donations", label: "후원자", href: "/admin/donations", icon: HandHeart, color: "from-rose-500 to-rose-600" },
 ] as const;
 
 export default function AdminDashboard() {
@@ -34,7 +36,7 @@ export default function AdminDashboard() {
     <div>
       <h1 className="mb-6 text-2xl font-bold text-gray-800">대시보드</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {CARDS.map(({ key, label, href, icon: Icon, color }) => (
           <Link
             key={key}

@@ -9,8 +9,9 @@ const NAV_ITEMS = [
   { label: "홈", href: "/" },
   { label: "소식", href: "/news" },
   { label: "의견함", href: "/opinions" },
-  { label: "참관인 신청", href: "/observer" },
-  { label: "설문", href: "/crosswalk-survey" },
+  // { label: "참관인 신청", href: "/observer" },
+  // { label: "설문", href: "/crosswalk-survey" },
+  { label: "후원인 정보입력", href: "/donate" },
 ] as const;
 
 export default function Navbar() {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 
+
 const OBSERVER_TYPES = [
   { value: "투표참관인", label: "투표참관인", desc: "투표일 당일 투표소에서 투표 과정을 참관합니다" },
   { value: "개표참관인", label: "개표참관인", desc: "개표소에서 개표 과정을 참관합니다" },

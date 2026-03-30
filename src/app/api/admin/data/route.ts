@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken, getTokenFromRequest } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
-const ALLOWED_TABLES = ["survey_responses", "cheers", "opinions", "poll_observers", "posts"];
-const DELETABLE_TABLES = ["posts", "cheers", "opinions"];
+const ALLOWED_TABLES = ["survey_responses", "cheers", "opinions", "poll_observers", "posts", "donations"];
+const DELETABLE_TABLES = ["posts", "cheers", "opinions", "donations"];
 
 function unauthorized() {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 
+
 const CATEGORIES = [
   "교통",
   "안전",

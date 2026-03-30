@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Vote,
   FileText,
+  HandHeart,
   LogOut,
   Menu,
   X,
@@ -22,6 +23,7 @@ const MENU = [
   { label: "주민 의견", href: "/admin/opinions", icon: MessageSquare },
   { label: "참관인 신청", href: "/admin/observers", icon: Vote },
   { label: "소식 관리", href: "/admin/posts", icon: FileText },
+  { label: "후원자 관리", href: "/admin/donations", icon: HandHeart },
 ] as const;
 
 export default function AdminLayout({
