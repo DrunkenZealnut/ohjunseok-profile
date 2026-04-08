@@ -6,7 +6,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("survey_responses")
-    .select("id, location, issue_types, detail, created_at")
+    .select("id, location, issue_types, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {

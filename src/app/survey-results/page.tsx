@@ -35,7 +35,6 @@ interface Survey {
   id: string;
   location: string;
   issue_types: string[];
-  detail: string | null;
   created_at: string;
 }
 
@@ -44,20 +43,21 @@ export default function SurveyResultsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [showAllResponses, setShowAllResponses] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function fetchAll() {
       setLoading(true);
       try {
         const res = await fetch("/api/survey-results");
-        if (res.ok) {
-          const data = await res.json();
-          setItems(data);
-        }
+        if (!res.ok) throw new Error("fetch failed");
+        const data = await res.json();
+        setItems(data);
       } catch {
-        // ignore
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     fetchAll();
   }, []);
@@ -68,6 +68,24 @@ export default function SurveyResultsPage() {
         <div className="text-center">
           <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-sky-200 border-t-sky-500" />
           <p className="text-sky-600">조사 결과를 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-sky-50 px-5">
+        <div className="w-full max-w-md rounded-2xl bg-white p-10 text-center shadow-xl">
+          <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-amber-500" />
+          <h2 className="mb-2 text-xl font-bold text-gray-800">데이터를 불러올 수 없습니다</h2>
+          <p className="mb-6 text-sm text-gray-500">잠시 후 다시 시도해주세요.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="rounded-full bg-sky-500 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-sky-600"
+          >
+            다시 시도
+          </button>
         </div>
       </div>
     );
@@ -394,11 +412,6 @@ export default function SurveyResultsPage() {
                     </span>
                   ))}
                 </div>
-                {s.detail && (
-                  <p className="rounded-lg bg-white p-3 text-sm leading-relaxed text-gray-600">
-                    {s.detail}
-                  </p>
-                )}
               </div>
             ))}
           </div>

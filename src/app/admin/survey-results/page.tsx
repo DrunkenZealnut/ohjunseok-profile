@@ -48,21 +48,27 @@ export default function SurveyResultsPage() {
   useEffect(() => {
     async function fetchAll() {
       setLoading(true);
-      const allItems: Survey[] = [];
-      let page = 1;
-      let hasMore = true;
+      try {
+        const allItems: Survey[] = [];
+        let page = 1;
+        let hasMore = true;
 
-      while (hasMore) {
-        const res = await adminGet(
-          `table=survey_responses&page=${page}&limit=100`
-        );
-        allItems.push(...res.data);
-        hasMore = allItems.length < res.count;
-        page++;
+        while (hasMore) {
+          const res = await adminGet(
+            `table=survey_responses&page=${page}&limit=100`
+          );
+          if (!Array.isArray(res.data) || res.data.length === 0) break;
+          allItems.push(...res.data);
+          hasMore = allItems.length < res.count;
+          page++;
+        }
+
+        setItems(allItems);
+      } catch {
+        // fetch failed
+      } finally {
+        setLoading(false);
       }
-
-      setItems(allItems);
-      setLoading(false);
     }
     fetchAll();
   }, []);
