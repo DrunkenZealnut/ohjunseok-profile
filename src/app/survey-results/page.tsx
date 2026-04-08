@@ -35,6 +35,7 @@ interface Survey {
   id: string;
   location: string;
   issue_types: string[];
+  detail: string | null;
   created_at: string;
 }
 
@@ -412,6 +413,11 @@ export default function SurveyResultsPage() {
                     </span>
                   ))}
                 </div>
+                {s.detail && (
+                  <p className="mt-2 rounded-lg bg-white p-3 text-sm leading-relaxed text-gray-600 border border-gray-100">
+                    &ldquo;{s.detail}&rdquo;
+                  </p>
+                )}
               </div>
             ))}
           </div>
