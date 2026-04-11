@@ -30,8 +30,8 @@ export default function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Admin 페이지에서는 Navbar 숨김
-  if (pathname?.startsWith("/admin")) return null;
+  // Navbar 숨김 페이지
+  if (pathname?.startsWith("/admin") || pathname === "/crosswalk-survey") return null;
 
   return (
     <nav
