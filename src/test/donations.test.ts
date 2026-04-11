@@ -13,25 +13,33 @@ interface Donation {
   resident_id: string;
   phone: string;
   address: string;
+  detail_address: string | null;
+  postal_code: string | null;
+  is_anonymous: boolean;
+  email: string | null;
   amount: number;
   deposit_date: string;
   created_at: string;
 }
 
-function sanitizeCell(value: string | number): string {
-  const str = String(value);
+function sanitizeCell(value: string | number | boolean | null | undefined): string {
+  const str = String(value ?? "");
   if (/^[=+\-@\t]/.test(str)) return `\t${str}`;
   return str;
 }
 
 function toCSV(rows: Donation[]): string {
-  const headers = ["이름", "주민등록번호", "전화번호", "주소", "금액", "입금일", "접수일"];
+  const headers = ["이름", "기명여부", "주민등록번호", "전화번호", "이메일", "우편번호", "기본주소", "상세주소", "금액", "입금일", "접수일"];
   const lines = rows.map((d) =>
     [
       sanitizeCell(d.donor_name),
+      d.is_anonymous ? "익명" : "기명",
       sanitizeCell(d.resident_id),
       sanitizeCell(d.phone),
-      `"${d.address.replace(/"/g, '""')}"`,
+      sanitizeCell(d.email ?? ""),
+      sanitizeCell(d.postal_code ?? ""),
+      `"${(d.address ?? "").replace(/"/g, '""')}"`,
+      `"${(d.detail_address ?? "").replace(/"/g, '""')}"`,
       d.amount,
       new Date(d.deposit_date).toLocaleDateString("ko-KR"),
       new Date(d.created_at).toLocaleDateString("ko-KR"),
@@ -83,6 +91,10 @@ describe("toCSV", () => {
     resident_id: "900101-1234567",
     phone: "010-1234-5678",
     address: "서울시 종로구",
+    detail_address: "101동 1003호",
+    postal_code: "03000",
+    is_anonymous: false,
+    email: "hong@example.com",
     amount: 50000,
     deposit_date: "2026-01-15",
     created_at: "2026-01-15",
@@ -96,7 +108,7 @@ describe("toCSV", () => {
   it("첫 행에 한국어 헤더 포함", () => {
     const csv = toCSV([sampleDonation]);
     const firstLine = csv.replace("\uFEFF", "").split("\n")[0];
-    expect(firstLine).toBe("이름,주민등록번호,전화번호,주소,금액,입금일,접수일");
+    expect(firstLine).toBe("이름,기명여부,주민등록번호,전화번호,이메일,우편번호,기본주소,상세주소,금액,입금일,접수일");
   });
 
   it("빈 배열이면 헤더만 출력", () => {

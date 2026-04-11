@@ -9,7 +9,7 @@ const INSERTABLE_TABLES = ["posts", "donations"];
 // 테이블별 삽입 허용 필드 (임의 컬럼 주입 방지)
 const INSERTABLE_FIELDS: Record<string, string[]> = {
   posts: ["title", "content", "category", "published_at"],
-  donations: ["donor_name", "resident_id", "phone", "address", "amount", "deposit_date"],
+  donations: ["donor_name", "resident_id", "phone", "postal_code", "address", "detail_address", "is_anonymous", "email", "amount", "deposit_date"],
 };
 
 const PAGE_LIMIT_MAX = 100;
@@ -135,25 +135,44 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ data: result });
 }
 
-// PUT: 소식 수정
+const UPDATABLE_TABLES = ["posts", "donations"];
+
+// PUT: 수정
 export async function PUT(request: NextRequest) {
   if (!auth(request)) return unauthorized();
 
   const body = await request.json();
   const { table, id, data } = body;
 
-  if (table !== "posts") {
-    return NextResponse.json({ error: "Only posts can be updated" }, { status: 400 });
+  if (!UPDATABLE_TABLES.includes(table)) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 400 });
+  }
+
+  if (!id || typeof id !== "string") {
+    return NextResponse.json({ error: "Invalid id" }, { status: 400 });
+  }
+
+  // 테이블별 서버사이드 유효성 검사
+  if (table === "donations") {
+    const d = data as Record<string, unknown>;
+    const depositDate = d.deposit_date;
+    if (typeof depositDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(depositDate)) {
+      return NextResponse.json({ error: "Invalid deposit_date" }, { status: 400 });
+    }
+    const amount = d.amount;
+    if (!Number.isInteger(amount) || (amount as number) <= 0 || (amount as number) >= 1_000_000_000) {
+      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
+    }
   }
 
   // 허용된 필드만 추출 (임의 컬럼 주입 방지)
-  const allowedFields = INSERTABLE_FIELDS["posts"] ?? [];
+  const allowedFields = INSERTABLE_FIELDS[table] ?? [];
   const sanitized = Object.fromEntries(
     Object.entries(data as Record<string, unknown>).filter(([key]) => allowedFields.includes(key))
   );
 
   const { data: result, error } = await getSupabaseAdmin()
-    .from("posts")
+    .from(table)
     .update(sanitized)
     .eq("id", id)
     .select()
