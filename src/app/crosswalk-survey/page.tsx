@@ -1,11 +1,36 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 
 // 설문 종료 플래그 — false로 바꾸면 다시 활성화
 const SURVEY_CLOSED = true;
+
+function SurveyClosedPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-sky-50 px-5">
+      <div className="w-full max-w-lg rounded-2xl bg-white p-10 text-center shadow-xl">
+        <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-sky-500" />
+        <h2 className="mb-3 text-2xl font-bold text-sky-800">
+          설문이 마감되었습니다
+        </h2>
+        <p className="mb-8 leading-relaxed text-sky-700/80">
+          소중한 의견을 보내주신 모든 분들께 감사드립니다.
+          <br />
+          수집된 의견은 정책에 반영하겠습니다.
+        </p>
+        <Link
+          href="/"
+          className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-sky-600 px-8 py-3 font-bold text-white shadow-lg transition hover:-translate-y-0.5"
+        >
+          홈으로 돌아가기
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 const LOCATION_OPTIONS = [
   {
@@ -49,29 +74,12 @@ interface FormData {
 
 export default function SurveyPage() {
   if (SURVEY_CLOSED) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-sky-50 px-5">
-        <div className="w-full max-w-lg rounded-2xl bg-white p-10 text-center shadow-xl">
-          <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-sky-500" />
-          <h2 className="mb-3 text-2xl font-bold text-sky-800">
-            설문이 마감되었습니다
-          </h2>
-          <p className="mb-8 leading-relaxed text-sky-700/80">
-            소중한 의견을 보내주신 모든 분들께 감사드립니다.
-            <br />
-            수집된 의견은 정책에 반영하겠습니다.
-          </p>
-          <a
-            href="/"
-            className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-sky-600 px-8 py-3 font-bold text-white shadow-lg transition hover:-translate-y-0.5"
-          >
-            홈으로 돌아가기
-          </a>
-        </div>
-      </div>
-    );
+    return <SurveyClosedPage />;
   }
+  return <SurveyForm />;
+}
 
+function SurveyForm() {
   const [form, setForm] = useState<FormData>({
     location: "",
     issueTypes: [],
