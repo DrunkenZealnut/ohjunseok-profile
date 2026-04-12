@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
         </table>
       `;
     } else if (type === "donation") {
-      const { name, amount, depositDate } = body;
+      const { name, amount, depositDate, donorEmail } = body;
       subject = `[후원] 새로운 후원금 입금정보가 접수되었습니다`;
       html = `
         <h2>새로운 후원금 입금정보가 접수되었습니다</h2>
@@ -124,6 +124,53 @@ export async function POST(request: NextRequest) {
           </tr>
         </table>
       `;
+
+      // 후원자 이메일이 있으면 감사 메일 발송
+      if (donorEmail) {
+        const thankYouSubject = "소중한 후원에 감사드립니다 - 오준석 후보";
+        const thankYouHtml = `
+          <div style="max-width:600px;margin:0 auto;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;">
+            <div style="background:linear-gradient(135deg,#0ea5e9,#0284c7);padding:32px;text-align:center;border-radius:12px 12px 0 0;">
+              <h1 style="color:#fff;margin:0;font-size:24px;">감사합니다</h1>
+            </div>
+            <div style="padding:32px;background:#fff;border:1px solid #e0e0e0;border-top:none;border-radius:0 0 12px 12px;">
+              <p style="font-size:16px;color:#333;line-height:1.8;margin:0 0 16px;">
+                <strong>${name || "후원자"}</strong>님, 안녕하세요.
+              </p>
+              <p style="font-size:16px;color:#333;line-height:1.8;margin:0 0 16px;">
+                오준석 후보에게 보내주신 소중한 후원에 진심으로 감사드립니다.
+              </p>
+              <table style="border-collapse:collapse;width:100%;margin:20px 0;border-radius:8px;overflow:hidden;">
+                <tr>
+                  <td style="padding:12px 16px;background:#f0f9ff;border:1px solid #bae6fd;font-weight:bold;color:#0369a1;width:120px;">후원 금액</td>
+                  <td style="padding:12px 16px;border:1px solid #bae6fd;color:#333;">${Number(amount).toLocaleString("ko-KR")}원</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;background:#f0f9ff;border:1px solid #bae6fd;font-weight:bold;color:#0369a1;">입금일자</td>
+                  <td style="padding:12px 16px;border:1px solid #bae6fd;color:#333;">${depositDate}</td>
+                </tr>
+              </table>
+              <p style="font-size:16px;color:#333;line-height:1.8;margin:0 0 16px;">
+                보내주신 후원금은 더 나은 지역사회를 만들기 위해 소중하게 사용하겠습니다.
+                기부금영수증은 확인 후 발급해 드리겠습니다.
+              </p>
+              <p style="font-size:16px;color:#333;line-height:1.8;margin:0;">
+                다시 한번 깊이 감사드립니다.
+              </p>
+              <div style="margin-top:24px;padding-top:20px;border-top:1px solid #e5e7eb;text-align:center;">
+                <p style="font-size:14px;color:#6b7280;margin:0;">오준석 후보 선거사무소</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        transporter.sendMail({
+          from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_FROM_EMAIL}>`,
+          to: donorEmail,
+          subject: thankYouSubject,
+          html: thankYouHtml,
+        }).catch((err: unknown) => console.error("Donor thank-you email failed:", err));
+      }
     } else if (type === "observer") {
       const { name, phone, address, observerType, availableDate, message } = body;
       subject = `[참관인] 투개표참관인 신청이 접수되었습니다`;

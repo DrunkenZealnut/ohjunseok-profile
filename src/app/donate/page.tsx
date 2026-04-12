@@ -142,6 +142,7 @@ export default function DonatePage() {
         name: form.name.trim(),
         amount: amountNumber,
         depositDate: form.depositDate,
+        donorEmail: form.email.trim() || null,
       }),
     }).catch((err) => console.error("Email notify failed:", err));
 
