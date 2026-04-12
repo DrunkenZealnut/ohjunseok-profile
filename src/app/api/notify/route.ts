@@ -104,6 +104,26 @@ export async function POST(request: NextRequest) {
           </tr>
         </table>
       `;
+    } else if (type === "donation") {
+      const { name, amount, depositDate } = body;
+      subject = `[후원] 새로운 후원금 입금정보가 접수되었습니다`;
+      html = `
+        <h2>새로운 후원금 입금정보가 접수되었습니다</h2>
+        <table style="border-collapse:collapse;width:100%;max-width:600px;">
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;width:120px;">후원자</td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${name || "익명"}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">금액</td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${Number(amount).toLocaleString("ko-KR")}원</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;background:#f5f5f5;font-weight:bold;">입금일자</td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${depositDate}</td>
+          </tr>
+        </table>
+      `;
     } else if (type === "observer") {
       const { name, phone, address, observerType, availableDate, message } = body;
       subject = `[참관인] 투개표참관인 신청이 접수되었습니다`;
@@ -140,9 +160,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid type" }, { status: 400 });
     }
 
+    const to = type === "donation"
+      ? process.env.DONATION_EMAIL || process.env.ADMIN_EMAIL
+      : process.env.ADMIN_EMAIL;
+
     await transporter.sendMail({
       from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_FROM_EMAIL}>`,
-      to: process.env.ADMIN_EMAIL,
+      to,
       subject,
       html,
     });
