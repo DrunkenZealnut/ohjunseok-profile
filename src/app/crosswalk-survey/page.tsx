@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Send, AlertTriangle } from "lucide-react";
 
 // 설문 종료 플래그 — false로 바꾸면 다시 활성화
-const SURVEY_CLOSED = true;
+const SURVEY_CLOSED = false;
 
 function SurveyClosedPage() {
   return (
