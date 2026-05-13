@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 const NAV_ITEMS = [
-  { label: "홈", href: "/" },
-  { label: "이문동 현황", href: "/imun" },
-  { label: "주민의견", href: "/opinions" },
-  { label: "후보활동", href: "/news" },
-  { label: "캠페인 성과", href: "/results" },
-  { label: "후원인 정보입력", href: "/donate" },
+  { label: "주민의견", href: "/opinions", external: false },
+  {
+    label: "신호체계설문결과",
+    href: "https://ohjunseok-profile.vercel.app/survey-results",
+    external: true,
+  },
 ] as const;
 
 export default function Navbar() {
@@ -60,20 +60,35 @@ export default function Navbar() {
 
         {/* Desktop */}
         <ul className="hidden gap-1 md:flex">
-          {NAV_ITEMS.map(({ label, href }) => (
+          {NAV_ITEMS.map(({ label, href, external }) => (
             <li key={href}>
-              <Link
-                href={href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                  pathname === href
-                    ? "bg-sky-500/10 text-sky-600 font-bold"
-                    : scrolled
+              {external ? (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                    scrolled || isOpen
                       ? "text-sky-700 hover:bg-sky-50"
                       : "text-white/90 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                {label}
-              </Link>
+                  }`}
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link
+                  href={href}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                    pathname === href
+                      ? "bg-sky-500/10 text-sky-600 font-bold"
+                      : scrolled
+                        ? "text-sky-700 hover:bg-sky-50"
+                        : "text-white/90 hover:text-white hover:bg-white/10"
+                  }`}
+                >
+                  {label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>
@@ -96,18 +111,29 @@ export default function Navbar() {
       {isOpen && (
         <div className="border-t border-sky-100 bg-white/95 backdrop-blur-md md:hidden">
           <ul className="flex flex-col px-5 py-3">
-            {NAV_ITEMS.map(({ label, href }) => (
+            {NAV_ITEMS.map(({ label, href, external }) => (
               <li key={href}>
-                <Link
-                  href={href}
-                  className={`block rounded-lg px-4 py-3 text-sm font-medium transition ${
-                    pathname === href
-                      ? "bg-sky-50 text-sky-600 font-bold"
-                      : "text-sky-700 hover:bg-sky-50"
-                  }`}
-                >
-                  {label}
-                </Link>
+                {external ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-lg px-4 py-3 text-sm font-medium text-sky-700 transition hover:bg-sky-50"
+                  >
+                    {label}
+                  </a>
+                ) : (
+                  <Link
+                    href={href}
+                    className={`block rounded-lg px-4 py-3 text-sm font-medium transition ${
+                      pathname === href
+                        ? "bg-sky-50 text-sky-600 font-bold"
+                        : "text-sky-700 hover:bg-sky-50"
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
