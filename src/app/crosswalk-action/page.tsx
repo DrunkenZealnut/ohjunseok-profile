@@ -4,7 +4,7 @@ import PoliceMeetingPhoto from "@/components/crosswalk-action/PoliceMeetingPhoto
 import SurveyResultSection from "@/components/crosswalk-action/SurveyResultSection";
 import PoliceResponseSection from "@/components/crosswalk-action/PoliceResponseSection";
 import ActionTimeline from "@/components/crosswalk-action/ActionTimeline";
-import ShareCTA from "@/components/crosswalk-action/ShareCTA";
+import OpinionsLink from "@/components/crosswalk-action/OpinionsLink";
 import {
   ISSUES,
   POLICE_RESPONSE,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function CrosswalkActionPage() {
   return (
     <main className="min-h-screen bg-sky-50 pb-20">
-      <ActionHero stats={SUMMARY_STATS} />
+      <ActionHero totalResponses={SUMMARY_STATS.totalResponses} />
 
       <div className="mx-auto max-w-3xl space-y-6 px-5 -mt-10 md:-mt-12">
         <PoliceMeetingPhoto photo={MEETING_PHOTOS[0]} />
@@ -47,7 +47,7 @@ export default function CrosswalkActionPage() {
         />
         <PoliceResponseSection response={POLICE_RESPONSE} />
         <ActionTimeline items={TIMELINE} />
-        <ShareCTA />
+        <OpinionsLink />
       </div>
     </main>
   );

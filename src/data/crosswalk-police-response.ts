@@ -91,9 +91,9 @@ export const ISSUES: Issue[] = [
 export const MEETING_PHOTOS: MeetingPhoto[] = [
   {
     src: "/crosswalk-police-2026-05-13.jpg",
-    alt: "동대문경찰서 면담 장면 — 오준석 후보가 주민 설문 결과를 설명하는 모습",
+    alt: "동대문경찰서 면담 장면 — 오준석 진보당 동대문구위원장이 주민 설문 결과를 설명하는 모습",
     caption:
-      "주민이 모아주신 25건의 설문 결과를 들고 동대문경찰서를 직접 찾아 횡단보도 개선 방안을 논의했습니다.",
+      "오준석 진보당 동대문구위원장은 주민들의 설문 결과를 동대문경찰서에 전달하고 개선방안을 논의했습니다.",
     date: "2026-05-13",
     width: 1280,
     height: 960,
@@ -172,17 +172,5 @@ export const TIMELINE: TimelineItem[] = [
     label: "이문3구역 조합 신호등 개선 공사",
     status: "in_progress",
     description: "이문로·천장산로 사거리 4구 신호등 설치 — 공사 일정 조합 측 문의 필요",
-  },
-  {
-    date: "예정",
-    label: "동대문구청 교통행정과 면담",
-    status: "planned",
-    description: "관할 이관 사항 협의 (대각선 횡단보도 등)",
-  },
-  {
-    date: "예정",
-    label: "주민 결과 보고 간담회",
-    status: "planned",
-    description: "면담 결과를 주민과 공유하고 다음 행동 계획",
   },
 ];
