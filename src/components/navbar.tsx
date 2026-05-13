@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "주민의견", href: "/opinions", external: false },
+  { label: "경찰서면담결과", href: "/crosswalk-action", external: false },
   {
     label: "신호체계설문결과",
     href: "https://ohjunseok-profile.vercel.app/survey-results",

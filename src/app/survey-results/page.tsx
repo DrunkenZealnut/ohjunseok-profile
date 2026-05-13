@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { BarChart3, MapPin, AlertTriangle, ChevronDown, ChevronUp, ShieldCheck, Clock, Footprints, Lightbulb } from "lucide-react";
-import Link from "next/link";
 
 const ISSUE_LABELS: Record<string, string> = {
   signal_system: "신호체계 문제",
@@ -874,22 +873,6 @@ export default function SurveyResultsPage() {
               해당 조건의 응답이 없습니다
             </p>
           )}
-        </div>
-
-        {/* CTA */}
-        <div className="rounded-2xl bg-gradient-to-br from-sky-100 to-sky-200 p-8 text-center">
-          <h3 className="mb-2 text-lg font-bold text-sky-900">
-            아직 의견을 제출하지 않으셨나요?
-          </h3>
-          <p className="mb-5 text-sm text-sky-700">
-            여러분의 의견이 모여 안전한 횡단보도를 만듭니다
-          </p>
-          <Link
-            href="/crosswalk-survey"
-            className="inline-block rounded-full bg-gradient-to-r from-sky-500 to-sky-600 px-8 py-3 font-bold text-white shadow-lg shadow-sky-500/30 transition hover:-translate-y-0.5"
-          >
-            설문 참여하기
-          </Link>
         </div>
       </div>
     </div>
