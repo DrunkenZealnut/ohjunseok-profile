@@ -31,14 +31,8 @@ export default function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Navbar 숨김 페이지
-  if (
-    pathname?.startsWith("/admin") ||
-    pathname === "/crosswalk-survey" ||
-    pathname === "/survey-results" ||
-    pathname === "/crosswalk-action"
-  )
-    return null;
+  // Navbar 숨김 페이지 (admin은 자체 레이아웃 사용)
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <nav

@@ -179,7 +179,7 @@ function SurveyForm() {
   return (
     <div className="min-h-screen bg-sky-50 pb-20">
       {/* Header */}
-      <header className="bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 px-5 py-16 text-center">
+      <header className="bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 px-5 pt-24 pb-16 text-center">
         <span className="mb-4 inline-block rounded-full bg-party-red px-5 py-1.5 text-sm font-bold text-white">
           진보당 동대문구위원회
         </span>
