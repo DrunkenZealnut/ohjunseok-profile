@@ -35,7 +35,8 @@ export default function Navbar() {
   if (
     pathname?.startsWith("/admin") ||
     pathname === "/crosswalk-survey" ||
-    pathname === "/survey-results"
+    pathname === "/survey-results" ||
+    pathname === "/crosswalk-action"
   )
     return null;
 
