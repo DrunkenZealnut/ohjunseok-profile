@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function CrosswalkActionPage() {
   return (
     <main className="min-h-screen bg-sky-50 pb-20">
-      <ActionHero totalResponses={SUMMARY_STATS.totalResponses} />
+      <ActionHero />
 
       <div className="mx-auto max-w-3xl space-y-6 px-5 -mt-10 md:-mt-12">
         <PoliceMeetingPhoto photo={MEETING_PHOTOS[0]} />

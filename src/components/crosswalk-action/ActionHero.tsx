@@ -1,25 +1,14 @@
-import { SUMMARY_STATS } from "@/data/crosswalk-police-response";
-
-interface Props {
-  totalResponses?: number;
-}
-
-export default function ActionHero({
-  totalResponses = SUMMARY_STATS.totalResponses,
-}: Props) {
+export default function ActionHero() {
   return (
-    <header className="bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 px-5 pt-24 pb-20 text-center">
-      <span className="mb-4 inline-block rounded-full bg-party-red px-5 py-1.5 text-sm font-bold text-white shadow-sm">
-        주민 의견 → 동대문경찰서 전달 완료
+    <header className="bg-gradient-to-br from-sky-200 via-sky-300 to-sky-400 px-5 pt-28 pb-20 text-center">
+      <span className="mb-5 inline-block rounded-full bg-party-red px-5 py-1.5 text-sm font-bold text-white shadow-sm">
+        오직 주민편 진보당 동대문구위원회
       </span>
-      <h1 className="mb-4 text-3xl font-black leading-tight text-sky-900 md:text-4xl">
-        여러분의 <span className="text-party-red">{totalResponses}건</span>이
-        <br />
-        경찰서로 전달됐습니다
+      <h1 className="mx-auto max-w-2xl text-2xl font-black leading-snug text-sky-900 md:text-3xl md:leading-tight">
+        이문동 주민들의 소중한 의견들을 모아
+        <br className="hidden sm:block" />
+        {" "}동대문경찰서를 만나고 왔습니다.
       </h1>
-      <p className="mx-auto max-w-md text-sm text-sky-800/80 md:text-base">
-        주민 설문 결과를 바탕으로 동대문경찰서를 직접 찾아 면담했습니다.
-      </p>
     </header>
   );
 }

@@ -7,10 +7,10 @@ import { Menu, X } from "lucide-react";
 
 const NAV_ITEMS = [
   { label: "홈", href: "/" },
-  { label: "소식", href: "/news" },
-  { label: "의견함", href: "/opinions" },
-  // { label: "참관인 신청", href: "/observer" },
-  // { label: "설문", href: "/crosswalk-survey" },
+  { label: "이문동 현황", href: "/imun" },
+  { label: "주민의견", href: "/opinions" },
+  { label: "후보활동", href: "/news" },
+  { label: "캠페인 성과", href: "/results" },
   { label: "후원인 정보입력", href: "/donate" },
 ] as const;
 
@@ -35,8 +35,7 @@ export default function Navbar() {
   if (
     pathname?.startsWith("/admin") ||
     pathname === "/crosswalk-survey" ||
-    pathname === "/survey-results" ||
-    pathname === "/crosswalk-action"
+    pathname === "/survey-results"
   )
     return null;
 
