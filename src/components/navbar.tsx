@@ -32,7 +32,13 @@ export default function Navbar() {
   }, [pathname]);
 
   // Navbar 숨김 페이지
-  if (pathname?.startsWith("/admin") || pathname === "/crosswalk-survey" || pathname === "/survey-results") return null;
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname === "/crosswalk-survey" ||
+    pathname === "/survey-results" ||
+    pathname === "/crosswalk-action"
+  )
+    return null;
 
   return (
     <nav
