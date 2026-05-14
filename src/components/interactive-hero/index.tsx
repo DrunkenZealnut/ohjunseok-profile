@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 
+const POSTER_PURPLE = "#46308a";
+
 const PROFILE_ITEMS = [
   "경희대 경제학과 졸업",
   "디자인기업 몽땅 대표",
@@ -16,7 +18,7 @@ export default function InteractiveHero() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-[#e8edf2]">
+    <section className="relative min-h-screen w-full overflow-hidden bg-white">
       {/* 우상단 진보당 뱃지 */}
       <div className="absolute right-5 top-20 z-30 rounded-md bg-party-red px-3 py-1.5 text-xs font-bold tracking-widest text-white md:right-10 md:top-24 md:text-sm">
         진보당
@@ -31,12 +33,18 @@ export default function InteractiveHero() {
           </p>
 
           {/* 슬로건 어퍼 */}
-          <p className="mb-2 text-2xl italic text-indigo-700 md:text-3xl">
+          <p
+            className="mb-2 text-2xl italic md:text-3xl"
+            style={{ color: POSTER_PURPLE }}
+          >
             아이 셋,
           </p>
 
           {/* 메인 헤드라인 — 벽보 그대로 4줄 stacked */}
-          <h1 className="text-6xl font-black leading-[0.95] tracking-tight text-indigo-800 md:text-7xl lg:text-8xl">
+          <h1
+            className="text-6xl font-black leading-[0.95] tracking-tight md:text-7xl lg:text-8xl"
+            style={{ color: POSTER_PURPLE }}
+          >
             우리
             <br />
             동네
@@ -50,7 +58,7 @@ export default function InteractiveHero() {
           <ul className="mt-7 space-y-1 text-xs text-neutral-900 md:mt-8 md:text-sm">
             {PROFILE_ITEMS.map((item) => (
               <li key={item} className="flex items-start gap-1.5">
-                <span className="text-indigo-700">•</span>
+                <span style={{ color: POSTER_PURPLE }}>•</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -58,14 +66,26 @@ export default function InteractiveHero() {
 
           {/* 하단: 띠 + "5 오준석" */}
           <div className="mt-8 md:mt-auto md:pt-10">
-            <div className="mb-2 inline-block rounded-md bg-indigo-700 px-3 py-1.5 text-xs font-bold text-white md:text-sm">
+            <div
+              className="mb-2 inline-block rounded-md px-3 py-1.5 text-xs font-bold text-white md:text-sm"
+              style={{ backgroundColor: POSTER_PURPLE }}
+            >
               동네 민원·육아 불편 척척 해결할 이문동 구의원 후보
             </div>
             <div className="flex items-center gap-3 md:gap-4">
-              <span className="inline-flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-indigo-700 text-4xl font-black text-white shadow-lg shadow-indigo-500/30 md:h-24 md:w-24 md:rounded-3xl md:text-6xl lg:h-28 lg:w-28 lg:text-7xl">
+              <span
+                className="inline-flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-4xl font-black text-white shadow-lg md:h-24 md:w-24 md:rounded-3xl md:text-6xl lg:h-28 lg:w-28 lg:text-7xl"
+                style={{
+                  backgroundColor: POSTER_PURPLE,
+                  boxShadow: "0 10px 25px -10px rgba(70,48,138,0.5)",
+                }}
+              >
                 5
               </span>
-              <span className="text-6xl font-black tracking-tight text-indigo-800 md:text-8xl lg:text-9xl">
+              <span
+                className="text-6xl font-black tracking-tight md:text-8xl lg:text-9xl"
+                style={{ color: POSTER_PURPLE }}
+              >
                 오준석
               </span>
             </div>
@@ -77,7 +97,7 @@ export default function InteractiveHero() {
           <div className="relative mx-auto aspect-[3/4] w-72 sm:w-80 md:mx-0 md:h-full md:w-full md:max-w-none md:aspect-auto md:min-h-[40rem]">
             {!isLoaded && (
               <div
-                className="absolute inset-0 rounded-2xl bg-indigo-200/30"
+                className="absolute inset-0 rounded-2xl bg-neutral-100"
                 style={{ animation: "skeleton-pulse 1.5s ease-in-out infinite" }}
               />
             )}
