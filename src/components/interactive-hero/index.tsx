@@ -17,9 +17,14 @@ export default function InteractiveHero() {
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#e8edf2]">
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-5 pt-24 pb-12 md:flex-row md:items-stretch md:gap-10 md:px-10 md:pt-28">
+      {/* 우상단 진보당 뱃지 */}
+      <div className="absolute right-5 top-20 z-30 rounded-md bg-party-red px-3 py-1.5 text-xs font-bold tracking-widest text-white md:right-10 md:top-24 md:text-sm">
+        진보당
+      </div>
+
+      <div className="mx-auto grid min-h-screen max-w-7xl grid-cols-1 gap-0 px-5 pt-24 pb-12 md:grid-cols-[minmax(0,26rem)_1fr] md:gap-2 md:px-10 md:pt-28 lg:grid-cols-[minmax(0,30rem)_1fr] lg:gap-4">
         {/* 좌측: 텍스트 영역 */}
-        <div className="order-2 flex w-full flex-col md:order-1 md:flex-1">
+        <div className="order-2 flex flex-col md:order-1">
           {/* 선거 정보 (작게) */}
           <p className="mb-3 text-[11px] font-bold text-neutral-700 md:text-xs">
             동대문구의회의원선거 동대문구 라선거구(이문1·2동)
@@ -67,15 +72,9 @@ export default function InteractiveHero() {
           </div>
         </div>
 
-        {/* 우측: 사진 영역 + 진보당 뱃지 */}
-        <div className="order-1 relative w-full md:order-2 md:flex-1">
-          {/* 진보당 뱃지 */}
-          <div className="absolute right-0 top-0 z-10 rounded-md bg-party-red px-3 py-1.5 text-xs font-bold tracking-widest text-white md:text-sm">
-            진보당
-          </div>
-
-          {/* 사진 */}
-          <div className="relative mx-auto aspect-[3/4] w-72 sm:w-80 md:w-full md:max-w-md lg:max-w-xl">
+        {/* 우측: 사진 영역 — 텍스트 바로 옆부터 시작 */}
+        <div className="order-1 relative w-full md:order-2 md:h-auto">
+          <div className="relative mx-auto aspect-[3/4] w-72 sm:w-80 md:mx-0 md:h-full md:w-full md:max-w-none md:aspect-auto md:min-h-[40rem]">
             {!isLoaded && (
               <div
                 className="absolute inset-0 rounded-2xl bg-indigo-200/30"
@@ -86,9 +85,9 @@ export default function InteractiveHero() {
               src="/ohjunseok-2026.png"
               alt="오준석 후보"
               fill
-              className="object-contain"
+              className="object-contain object-center md:object-left-bottom"
               priority
-              sizes="(max-width: 640px) 18rem, (max-width: 768px) 20rem, (max-width: 1024px) 28rem, 36rem"
+              sizes="(max-width: 640px) 18rem, (max-width: 768px) 20rem, (max-width: 1024px) 30rem, 40rem"
               onLoad={() => setIsLoaded(true)}
             />
           </div>
