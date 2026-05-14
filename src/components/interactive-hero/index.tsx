@@ -7,11 +7,14 @@ export default function InteractiveHero() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <section className="portrait-animate relative h-screen w-full overflow-hidden bg-sky-200">
+    <section
+      className="portrait-animate relative h-screen w-full overflow-hidden"
+      style={{ backgroundColor: "#dee9f0" }}
+    >
       <div className="absolute inset-0 flex items-center justify-center">
         {!isLoaded && (
           <div
-            className="absolute inset-0 bg-sky-300/40"
+            className="absolute inset-0 bg-sky-200/40"
             style={{ animation: "skeleton-pulse 1.5s ease-in-out infinite" }}
           />
         )}
@@ -20,8 +23,8 @@ export default function InteractiveHero() {
             src="/election-poster.jpg"
             alt="오준석 후보 — 동대문구의회의원 선거 라선거구 이문1·2동 진보당 기호 5번"
             fill
-            className="object-cover"
-            style={{ objectPosition: "65% 22%" }}
+            className="object-contain"
+            style={{ objectPosition: "center center" }}
             priority
             sizes="100vw"
             onLoad={() => setIsLoaded(true)}
