@@ -47,9 +47,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-4xl items-center justify-between px-5 py-3">
         <Link
           href="/"
-          className={`text-lg font-black transition ${
-            scrolled || isOpen ? "text-sky-800" : "text-white"
-          }`}
+          className="text-lg font-black text-sky-900 transition"
         >
           오준석
         </Link>
@@ -63,11 +61,7 @@ export default function Navbar() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-                    scrolled || isOpen
-                      ? "text-sky-700 hover:bg-sky-50"
-                      : "text-white/90 hover:text-white hover:bg-white/10"
-                  }`}
+                  className="rounded-lg px-3 py-2 text-sm font-medium text-sky-800 transition hover:bg-sky-50"
                 >
                   {label}
                 </a>
@@ -77,9 +71,7 @@ export default function Navbar() {
                   className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                     pathname === href
                       ? "bg-sky-500/10 text-sky-600 font-bold"
-                      : scrolled
-                        ? "text-sky-700 hover:bg-sky-50"
-                        : "text-white/90 hover:text-white hover:bg-white/10"
+                      : "text-sky-800 hover:bg-sky-50"
                   }`}
                 >
                   {label}
@@ -92,11 +84,7 @@ export default function Navbar() {
         {/* Mobile toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`rounded-lg p-2 md:hidden transition ${
-            scrolled || isOpen
-              ? "text-sky-800 hover:bg-sky-50"
-              : "text-white hover:bg-white/10"
-          }`}
+          className="rounded-lg p-2 text-sky-900 transition hover:bg-sky-50 md:hidden"
           aria-label="메뉴"
         >
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
