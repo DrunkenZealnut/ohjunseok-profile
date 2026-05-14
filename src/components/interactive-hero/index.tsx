@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 
-const POSTER_PURPLE = "#46308a";
+const POSTER_PURPLE = "#391e88";
+const POSTER_BG = "#acdef7";
 
 const PROFILE_ITEMS = [
   "경희대 경제학과 졸업",
@@ -18,7 +19,10 @@ export default function InteractiveHero() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-white">
+    <section
+      className="relative min-h-screen w-full overflow-hidden"
+      style={{ backgroundColor: POSTER_BG }}
+    >
       {/* 우상단 진보당 뱃지 */}
       <div className="absolute right-5 top-20 z-30 rounded-md bg-party-red px-3 py-1.5 text-xs font-bold tracking-widest text-white md:right-10 md:top-24 md:text-sm">
         진보당
@@ -77,7 +81,7 @@ export default function InteractiveHero() {
                 className="inline-flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-4xl font-black text-white shadow-lg md:h-24 md:w-24 md:rounded-3xl md:text-6xl lg:h-28 lg:w-28 lg:text-7xl"
                 style={{
                   backgroundColor: POSTER_PURPLE,
-                  boxShadow: "0 10px 25px -10px rgba(70,48,138,0.5)",
+                  boxShadow: "0 10px 25px -10px rgba(57,30,136,0.5)",
                 }}
               >
                 5
