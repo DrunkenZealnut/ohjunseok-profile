@@ -1,10 +1,11 @@
 import Link from "next/link";
 
 const FOOTER_LINKS = [
-  { label: "활동 소식", href: "/news" },
-  { label: "주민 의견함", href: "/opinions" },
-  // { label: "참관인 신청", href: "/observer" },
-  // { label: "설문", href: "/crosswalk-survey" },
+  { label: "이문동 현황", href: "/imun" },
+  { label: "주민의견", href: "/opinions" },
+  { label: "달빛어린이병원", href: "/child-hospital" },
+  { label: "후보활동", href: "/news" },
+  { label: "캠페인 성과", href: "/results" },
   { label: "후원인 정보입력", href: "/donate" },
 ] as const;
 

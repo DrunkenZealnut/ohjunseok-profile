@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-13T15:29:00.517Z",
+  "lastUpdated": "2026-05-14T00:54:33.389Z",
   "activeFeatures": [
     "Ohjunseok",
     "survey",
@@ -37,7 +37,9 @@
     "postal",
     "interactive-hero",
     "results",
-    "crosswalk-action"
+    "crosswalk-action",
+    "child-hospital",
+    "child-hospital Gap 분석"
   ],
   "primaryFeature": "Ohjunseok",
   "features": {
@@ -50,9 +52,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-24T07:47:01.442Z",
-        "lastUpdated": "2026-05-13T15:29:00.517Z"
+        "lastUpdated": "2026-05-14T00:19:21.217Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/components/navbar.tsx"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/page.tsx"
     },
     "survey": {
       "phase": "do",
@@ -89,7 +91,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-24T08:24:02.830Z",
-        "lastUpdated": "2026-04-24T05:34:49.400Z"
+        "lastUpdated": "2026-05-13T23:24:48.784Z"
       },
       "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/crosswalk-survey/page.tsx"
     },
@@ -258,9 +260,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-28T15:06:56.891Z",
-        "lastUpdated": "2026-05-13T14:44:26.382Z"
+        "lastUpdated": "2026-05-14T00:17:47.861Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/data/crosswalk-police-response.ts"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/data/child-hospital.ts"
     },
     "admin": {
       "phase": "do",
@@ -401,9 +403,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-02T08:36:44.636Z",
-        "lastUpdated": "2026-04-08T02:36:11.820Z"
+        "lastUpdated": "2026-05-13T23:39:44.445Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Ohjunseok/src/app/survey-results/page.tsx"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/survey-results/page.tsx"
     },
     "opinions-public": {
       "phase": "do",
@@ -550,9 +552,36 @@
       "documents": {},
       "timestamps": {
         "started": "2026-05-13T14:44:35.600Z",
-        "lastUpdated": "2026-05-13T14:45:44.712Z"
+        "lastUpdated": "2026-05-13T23:15:33.355Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/crosswalk-action/page.tsx"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/components/crosswalk-action/ActionHero.tsx"
+    },
+    "child-hospital": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-14T00:18:00.747Z",
+        "lastUpdated": "2026-05-14T00:20:03.663Z"
+      },
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/child-hospital/page.tsx"
+    },
+    "child-hospital Gap 분석": {
+      "phase": "act",
+      "phaseNumber": 5,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-14T00:54:33.388Z",
+        "lastUpdated": "2026-05-14T00:54:33.389Z"
+      },
+      "previousPhase": "check",
+      "autoAdvanced": true
     }
   },
   "pipeline": {
@@ -563,7 +592,7 @@
   "session": {
     "startedAt": "2026-03-24T07:38:49.089Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-05-13T15:29:00.517Z"
+    "lastActivity": "2026-05-14T00:54:33.389Z"
   },
   "history": [
     {
@@ -2598,6 +2627,228 @@
       "timestamp": "2026-05-13T15:29:00.517Z",
       "feature": "Ohjunseok",
       "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T15:53:26.535Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T15:53:38.100Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:05:19.932Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:06:53.663Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:07:02.396Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:07:11.085Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:07:19.828Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:07:28.926Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:12:56.073Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:13:02.410Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:13:06.915Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:15:26.905Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:15:33.355Z",
+      "feature": "crosswalk-action",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:21:12.791Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:21:20.794Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:21:28.504Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:24:43.475Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:24:48.784Z",
+      "feature": "crosswalk-survey",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:39:22.593Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:39:35.510Z",
+      "feature": "survey-results",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-13T23:39:44.445Z",
+      "feature": "survey-results",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:17:47.861Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:00.747Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:05.693Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:14.643Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:21.975Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:30.337Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:41.696Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:48.413Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:18:54.033Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:19:08.467Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:19:12.014Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:19:18.325Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:19:21.217Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:19:57.960Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:20:03.663Z",
+      "feature": "child-hospital",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T00:54:33.389Z",
+      "feature": "child-hospital Gap 분석",
+      "phase": "act",
       "action": "updated"
     }
   ],

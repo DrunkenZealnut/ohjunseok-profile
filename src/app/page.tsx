@@ -1,19 +1,17 @@
-import Hero from "@/components/hero";
+import InteractiveHero from "@/components/interactive-hero";
 import Profile from "@/components/profile";
-import Values from "@/components/values";
-import NewsPreview from "@/components/news-preview";
 import Pledges from "@/components/pledges";
+import HomeActionCards from "@/components/home-action-cards";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 
 export default function Home() {
   return (
     <>
-      <Hero />
+      <InteractiveHero />
       <Profile />
-      <Values />
-      <NewsPreview />
       <Pledges />
+      <HomeActionCards />
       <Contact />
       <Footer />
     </>
