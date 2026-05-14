@@ -15,13 +15,13 @@ export default function InteractiveHero() {
             style={{ animation: "skeleton-pulse 1.5s ease-in-out infinite" }}
           />
         )}
-        <div className="relative h-[85%] w-full">
+        <div className="relative h-full w-full">
           <Image
-            src="/ohjunseok-2026.png"
-            alt="오준석 후보"
+            src="/election-poster.jpg"
+            alt="오준석 후보 — 동대문구의회의원 선거 라선거구 이문1·2동 진보당 기호 5번"
             fill
-            className="object-contain"
-            style={{ objectPosition: "center center" }}
+            className="object-cover"
+            style={{ objectPosition: "65% 22%" }}
             priority
             sizes="100vw"
             onLoad={() => setIsLoaded(true)}
