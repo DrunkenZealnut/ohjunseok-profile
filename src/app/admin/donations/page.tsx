@@ -2,8 +2,18 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { adminGet, adminPost, adminPut, adminDelete } from "@/lib/admin-fetch";
-import { Trash2, Plus, Download, X, Pencil, Search } from "lucide-react";
-import * as XLSX from "xlsx";
+import { Trash2, Plus, Download, X, Pencil, Search, Package } from "lucide-react";
+import {
+  toExpenseSourceXlsx,
+  toNamedIncomeXlsx,
+  toAnonIncomeXlsx,
+  buildFileName,
+  ANONYMOUS_RESIDENT_ID,
+  ANONYMOUS_PHONE,
+  ANONYMOUS_ADDRESS,
+  type Donation,
+} from "./lib/donation-export";
+import { TEMPLATE_META } from "./lib/template-meta";
 
 declare global {
   interface Window {
@@ -13,21 +23,6 @@ declare global {
       }) => { open: () => void };
     };
   }
-}
-
-interface Donation {
-  id: string;
-  donor_name: string;
-  resident_id: string;
-  phone: string;
-  address: string;
-  detail_address: string | null;
-  postal_code: string | null;
-  is_anonymous: boolean;
-  email: string | null;
-  amount: number;
-  deposit_date: string;
-  created_at: string;
 }
 
 interface DonationForm {
@@ -64,54 +59,6 @@ function getEmptyForm(): DonationForm {
 function maskResidentId(rid: string) {
   if (!rid || rid.length < 8) return rid;
   return rid.slice(0, 8) + "******";
-}
-
-/** 주민번호 → 생년월일 8자리 (예: 900101-1... → 19900101) */
-function ridToBirth(rid: string): string {
-  if (!rid || rid.length < 8) return "";
-  const digits = rid.replace("-", "");
-  const front = digits.slice(0, 6);
-  const gen = digits[6];
-  const century = gen === "3" || gen === "4" ? "20" : "19";
-  return century + front;
-}
-
-/** 입금일 → YYYY.MM.DD */
-function formatDateDot(date: string): string {
-  return date.slice(0, 10).replace(/-/g, ".");
-}
-
-const XLS_HEADERS = [
-  "*계정", "*과목", "*수입일자", "*내역", "*수입제공자",
-  "생년월일(사업자번호)", "우편번호", "주  소", "상세주소",
-  "직업\n(업종)", "전화번호", "*금액", "*증빙서\n첨부",
-  "영수증번호/\n미첨부사유", "*수입지출처\n구분", "비고",
-];
-
-function toNamedXlsx(rows: Donation[]): ArrayBuffer {
-  const named = rows.filter((d) => !d.is_anonymous);
-  const data = named.map((d) => [
-    "수입", "기명후원금", formatDateDot(d.deposit_date), "후원",
-    d.donor_name, ridToBirth(d.resident_id),
-    d.postal_code ?? "", d.address ?? "", d.detail_address ?? "",
-    "", d.phone, d.amount, "Y", "", "개인", d.email ?? "",
-  ]);
-  const ws = XLSX.utils.aoa_to_sheet([XLS_HEADERS, ...data]);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "수입 내역 일괄등록");
-  return XLSX.write(wb, { bookType: "xlsx", type: "array" });
-}
-
-function toAnonXlsx(rows: Donation[]): ArrayBuffer {
-  const anon = rows.filter((d) => d.is_anonymous);
-  const data = anon.map((d) => [
-    "수입", "익명후원금", formatDateDot(d.deposit_date), "후원",
-    "익명", "", "", "", "", "", "", d.amount, "N", "익명", "개인", "",
-  ]);
-  const ws = XLSX.utils.aoa_to_sheet([XLS_HEADERS, ...data]);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "수입 내역 일괄등록");
-  return XLSX.write(wb, { bookType: "xlsx", type: "array" });
 }
 
 function sanitizeCell(value: string | number | boolean | null | undefined): string {
@@ -222,6 +169,27 @@ export default function AdminDonations() {
     setFormError("");
   }
 
+  function setAnonymousMode(anon: boolean) {
+    if (anon) {
+      setForm((f) => ({
+        ...f,
+        is_anonymous: true,
+        resident_id: ANONYMOUS_RESIDENT_ID,
+        phone: "",
+        email: "",
+        postal_code: "",
+        address: "",
+        detail_address: "",
+      }));
+    } else {
+      setForm((f) => ({
+        ...f,
+        is_anonymous: false,
+        resident_id: "",
+      }));
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm("이 후원 정보를 삭제하시겠습니까?")) return;
     await adminDelete("donations", id);
@@ -232,7 +200,7 @@ export default function AdminDonations() {
     e.preventDefault();
     setFormError("");
 
-    if (!form.is_anonymous && !form.donor_name.trim()) return setFormError("이름을 입력해주세요.");
+    if (!form.donor_name.trim()) return setFormError("이름을 입력해주세요.");
     if (!form.amount || isNaN(Number(form.amount)) || Number(form.amount) <= 0)
       return setFormError("올바른 금액을 입력해주세요.");
     if (!form.deposit_date) return setFormError("입금일을 입력해주세요.");
@@ -240,13 +208,13 @@ export default function AdminDonations() {
     setSubmitting(true);
     const payload = {
       donor_name: form.donor_name.trim(),
-      resident_id: form.resident_id.trim(),
-      phone: form.phone.trim(),
-      postal_code: form.postal_code.trim() || null,
-      address: form.address.trim(),
-      detail_address: form.detail_address.trim() || null,
+      resident_id: form.is_anonymous ? ANONYMOUS_RESIDENT_ID : form.resident_id.trim(),
+      phone: form.is_anonymous ? ANONYMOUS_PHONE : form.phone.trim(),
+      postal_code: form.is_anonymous ? null : (form.postal_code.trim() || null),
+      address: form.is_anonymous ? ANONYMOUS_ADDRESS : form.address.trim(),
+      detail_address: form.is_anonymous ? null : (form.detail_address.trim() || null),
       is_anonymous: form.is_anonymous,
-      email: form.email.trim() || null,
+      email: form.is_anonymous ? null : (form.email.trim() || null),
       amount: Number(form.amount),
       deposit_date: form.deposit_date,
     };
@@ -293,22 +261,85 @@ export default function AdminDonations() {
     } finally { setDownloading(false); }
   }
 
-  async function handleDownloadNamedXlsx() {
-    setDownloading(true);
-    try {
-      const all = await fetchAll();
-      if (!all) return;
-      downloadBlob(toNamedXlsx(all), `기명후원금_${new Date().toISOString().slice(0, 10)}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    } finally { setDownloading(false); }
+  const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+  function handleXlsxError(err: unknown, kind: string) {
+    if (err instanceof Error && err.message === "NO_DATA") {
+      alert(`${kind}: 내보낼 데이터가 없습니다.`);
+      return;
+    }
+    console.error(err);
+    alert(`${kind} 다운로드 중 오류가 발생했습니다. 양식 파일을 확인해주세요.`);
   }
 
-  async function handleDownloadAnonXlsx() {
+  async function handleDownloadExpenseSource() {
     setDownloading(true);
     try {
       const all = await fetchAll();
       if (!all) return;
-      downloadBlob(toAnonXlsx(all), `익명후원금_${new Date().toISOString().slice(0, 10)}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    } finally { setDownloading(false); }
+      const buf = await toExpenseSourceXlsx(all);
+      downloadBlob(buf, buildFileName(TEMPLATE_META.expenseSource.fileNamePrefix), XLSX_MIME);
+    } catch (err) {
+      handleXlsxError(err, "수입지출처");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleDownloadNamedIncome() {
+    setDownloading(true);
+    try {
+      const all = await fetchAll();
+      if (!all) return;
+      const buf = await toNamedIncomeXlsx(all);
+      downloadBlob(buf, buildFileName(TEMPLATE_META.namedIncome.fileNamePrefix), XLSX_MIME);
+    } catch (err) {
+      handleXlsxError(err, "수입내역(기명)");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleDownloadAnonIncome() {
+    setDownloading(true);
+    try {
+      const all = await fetchAll();
+      if (!all) return;
+      const buf = await toAnonIncomeXlsx(all);
+      downloadBlob(buf, buildFileName(TEMPLATE_META.anonIncome.fileNamePrefix), XLSX_MIME);
+    } catch (err) {
+      handleXlsxError(err, "익명수입자");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleDownloadAll() {
+    setDownloading(true);
+    try {
+      const all = await fetchAll();
+      if (!all) return;
+      const jobs: Array<{ name: string; run: () => Promise<ArrayBuffer>; prefix: string }> = [
+        { name: "수입지출처", run: () => toExpenseSourceXlsx(all), prefix: TEMPLATE_META.expenseSource.fileNamePrefix },
+        { name: "수입내역(기명)", run: () => toNamedIncomeXlsx(all), prefix: TEMPLATE_META.namedIncome.fileNamePrefix },
+        { name: "익명수입자", run: () => toAnonIncomeXlsx(all), prefix: TEMPLATE_META.anonIncome.fileNamePrefix },
+      ];
+      for (const job of jobs) {
+        try {
+          const buf = await job.run();
+          downloadBlob(buf, buildFileName(job.prefix), XLSX_MIME);
+        } catch (err) {
+          if (err instanceof Error && err.message === "NO_DATA") {
+            console.info(`[일괄] ${job.name}: 데이터 없음, 건너뜀`);
+            continue;
+          }
+          handleXlsxError(err, job.name);
+          return;
+        }
+      }
+    } finally {
+      setDownloading(false);
+    }
   }
 
   const totalPages = Math.ceil(count / PAGE_SIZE);
@@ -331,25 +362,46 @@ export default function AdminDonations() {
         </div>
         <div className="flex flex-wrap gap-2">
           <button
-            onClick={handleDownloadNamedXlsx}
+            onClick={handleDownloadExpenseSource}
             disabled={downloading || count === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
+            title="회계: 수입지출처 일괄등록 양식 (기명, 중복 제거)"
           >
             <Download className="h-4 w-4" />
-            {downloading ? "..." : "기명 XLS"}
+            {downloading ? "..." : "수입지출처 XLS"}
           </button>
           <button
-            onClick={handleDownloadAnonXlsx}
+            onClick={handleDownloadNamedIncome}
             disabled={downloading || count === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
+            title="회계: 수입내역 일괄등록 양식 (기명)"
           >
             <Download className="h-4 w-4" />
-            {downloading ? "..." : "익명 XLS"}
+            {downloading ? "..." : "수입내역(기명) XLS"}
+          </button>
+          <button
+            onClick={handleDownloadAnonIncome}
+            disabled={downloading || count === 0}
+            className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
+            title="회계: 익명수입자 일괄등록 양식 (Sheet2에 실명 백업 포함)"
+          >
+            <Download className="h-4 w-4" />
+            {downloading ? "..." : "익명수입자 XLS"}
+          </button>
+          <button
+            onClick={handleDownloadAll}
+            disabled={downloading || count === 0}
+            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-40"
+            title="3종 양식 일괄 다운로드"
+          >
+            <Package className="h-4 w-4" />
+            {downloading ? "..." : "일괄 다운로드"}
           </button>
           <button
             onClick={handleDownloadCSV}
             disabled={downloading || count === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
+            title="백업/검수용 CSV"
           >
             <Download className="h-4 w-4" />
             {downloading ? "..." : "CSV"}
@@ -519,7 +571,7 @@ export default function AdminDonations() {
                   <div className="flex gap-2">
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, is_anonymous: false })}
+                      onClick={() => setAnonymousMode(false)}
                       className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                         !form.is_anonymous
                           ? "border-rose-500 bg-rose-50 text-rose-700"
@@ -530,7 +582,7 @@ export default function AdminDonations() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setForm({ ...form, is_anonymous: true })}
+                      onClick={() => setAnonymousMode(true)}
                       className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition ${
                         form.is_anonymous
                           ? "border-rose-500 bg-rose-50 text-rose-700"
@@ -570,32 +622,35 @@ export default function AdminDonations() {
                   />
                 </div>
 
-                {/* 이름 */}
-                <div className={`col-span-2 sm:col-span-1 ${form.is_anonymous ? "opacity-40" : ""}`}>
+                {/* 이름 (익명도 입력 받음) */}
+                <div className="col-span-2 sm:col-span-1">
                   <label className="mb-1 block text-sm font-medium text-gray-700">
-                    이름 {!form.is_anonymous && <span className="text-rose-500">*</span>}
+                    이름 <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={form.donor_name}
                     onChange={(e) => setForm({ ...form, donor_name: e.target.value })}
-                    disabled={form.is_anonymous}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
                     placeholder="홍길동"
                   />
                 </div>
 
-                {/* 주민등록번호 */}
-                <div className={`col-span-2 sm:col-span-1 ${form.is_anonymous ? "opacity-40" : ""}`}>
+                {/* 주민등록번호 (익명 시 sentinel 자동 표시) */}
+                <div className={`col-span-2 sm:col-span-1 ${form.is_anonymous ? "opacity-60" : ""}`}>
                   <label className="mb-1 block text-sm font-medium text-gray-700">
                     주민등록번호
+                    {form.is_anonymous && (
+                      <span className="ml-1 text-xs text-gray-400">(익명 자동 처리)</span>
+                    )}
                   </label>
                   <input
                     type="text"
-                    value={form.resident_id}
+                    value={form.is_anonymous ? ANONYMOUS_RESIDENT_ID : form.resident_id}
                     onChange={(e) => setForm({ ...form, resident_id: e.target.value })}
                     disabled={form.is_anonymous}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    readOnly={form.is_anonymous}
+                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
                     placeholder="900101-1234567"
                   />
                 </div>

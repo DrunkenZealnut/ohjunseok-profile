@@ -3,6 +3,11 @@
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, AlertTriangle, Heart, Search } from "lucide-react";
+import {
+  ANONYMOUS_RESIDENT_ID,
+  ANONYMOUS_PHONE,
+  ANONYMOUS_ADDRESS,
+} from "@/app/admin/donations/lib/donation-export";
 
 declare global {
   interface Window {
@@ -66,6 +71,24 @@ export default function DonatePage() {
     document.head.appendChild(s);
   }
 
+  function setAnonymousMode(anon: boolean) {
+    setForm((f) => ({
+      ...f,
+      isAnonymous: anon,
+      ...(anon
+        ? {
+            residentId1: "",
+            residentId2: "",
+            phone: "",
+            email: "",
+            postalCode: "",
+            address: "",
+            detailAddress: "",
+          }
+        : {}),
+    }));
+  }
+
   function formatPhone(value: string) {
     const digits = value.replace(/\D/g, "").slice(0, 11);
     if (digits.length <= 3) return digits;
@@ -87,17 +110,19 @@ export default function DonatePage() {
       setError("이름을 입력해주세요.");
       return;
     }
-    if (form.residentId1.length !== 6 || form.residentId2.length !== 7) {
-      setError("주민등록번호를 정확히 입력해주세요.");
-      return;
-    }
-    if (form.phone.replace(/\D/g, "").length < 10) {
-      setError("전화번호를 정확히 입력해주세요.");
-      return;
-    }
-    if (!form.address.trim()) {
-      setError("주소를 입력해주세요.");
-      return;
+    if (!form.isAnonymous) {
+      if (form.residentId1.length !== 6 || form.residentId2.length !== 7) {
+        setError("주민등록번호를 정확히 입력해주세요.");
+        return;
+      }
+      if (form.phone.replace(/\D/g, "").length < 10) {
+        setError("전화번호를 정확히 입력해주세요.");
+        return;
+      }
+      if (!form.address.trim()) {
+        setError("주소를 입력해주세요.");
+        return;
+      }
     }
     if (!form.amount || Number(form.amount.replace(/,/g, "")) <= 0) {
       setError("후원금 금액을 입력해주세요.");
@@ -110,16 +135,18 @@ export default function DonatePage() {
 
     setSubmitting(true);
 
-    const residentId = `${form.residentId1}-${form.residentId2}`;
+    const residentId = form.isAnonymous
+      ? ANONYMOUS_RESIDENT_ID
+      : `${form.residentId1}-${form.residentId2}`;
     const amountNumber = Number(form.amount.replace(/,/g, ""));
     const { error: dbError } = await supabase.from("donations").insert({
       donor_name: form.name.trim(),
       resident_id: residentId,
-      phone: form.phone.trim(),
-      postal_code: form.postalCode.trim() || null,
-      address: form.address.trim(),
-      detail_address: form.detailAddress.trim() || null,
-      email: form.email.trim() || null,
+      phone: form.isAnonymous ? ANONYMOUS_PHONE : form.phone.trim(),
+      postal_code: form.isAnonymous ? null : (form.postalCode.trim() || null),
+      address: form.isAnonymous ? ANONYMOUS_ADDRESS : form.address.trim(),
+      detail_address: form.isAnonymous ? null : (form.detailAddress.trim() || null),
+      email: form.isAnonymous ? null : (form.email.trim() || null),
       is_anonymous: form.isAnonymous,
       amount: amountNumber,
       deposit_date: form.depositDate,
@@ -192,6 +219,42 @@ export default function DonatePage() {
         onSubmit={handleSubmit}
         className="mx-auto -mt-8 max-w-2xl rounded-2xl bg-white px-6 py-10 shadow-xl md:px-10"
       >
+        {/* 0. 후원 방식 (기명/익명) */}
+        <fieldset className="mb-8">
+          <legend className="mb-3 flex items-center gap-2 text-lg font-bold text-sky-800">
+            후원 방식
+          </legend>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setAnonymousMode(false)}
+              className={`flex-1 rounded-xl border-2 px-4 py-3 font-bold transition ${
+                !form.isAnonymous
+                  ? "border-sky-500 bg-sky-50 text-sky-700"
+                  : "border-sky-200 text-sky-400 hover:bg-sky-50"
+              }`}
+            >
+              기명 후원
+            </button>
+            <button
+              type="button"
+              onClick={() => setAnonymousMode(true)}
+              className={`flex-1 rounded-xl border-2 px-4 py-3 font-bold transition ${
+                form.isAnonymous
+                  ? "border-sky-500 bg-sky-50 text-sky-700"
+                  : "border-sky-200 text-sky-400 hover:bg-sky-50"
+              }`}
+            >
+              익명 후원
+            </button>
+          </div>
+          {form.isAnonymous && (
+            <p className="mt-3 rounded-xl bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-700">
+              ⚠️ 익명 후원은 기부금영수증 발급이 불가합니다. 영수증이 필요하시면 기명 후원을 선택해주세요.
+            </p>
+          )}
+        </fieldset>
+
         {/* 1. 이름 */}
         <fieldset className="mb-8">
           <legend className="mb-3 flex items-center gap-2 text-lg font-bold text-sky-800">
@@ -210,6 +273,8 @@ export default function DonatePage() {
           />
         </fieldset>
 
+        {!form.isAnonymous && (
+          <>
         {/* 2. 주민등록번호 */}
         <fieldset className="mb-8">
           <legend className="mb-3 flex items-center gap-2 text-lg font-bold text-sky-800">
@@ -343,6 +408,8 @@ export default function DonatePage() {
             className="w-full rounded-xl border-2 border-sky-200 px-4 py-3 text-sky-900 placeholder:text-sky-300 focus:border-sky-500 focus:outline-none"
           />
         </fieldset>
+          </>
+        )}
 
         {/* 6. 후원금 금액 */}
         <fieldset className="mb-8">

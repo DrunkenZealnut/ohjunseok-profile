@@ -1,7 +1,9 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-14T00:54:33.389Z",
+  "lastUpdated": "2026-05-15T05:27:48.880Z",
   "activeFeatures": [
+    "anonymous-donor-default-birthdate",
+    "donation-accounting-export",
     "Ohjunseok",
     "survey",
     "setup",
@@ -41,8 +43,43 @@
     "child-hospital",
     "child-hospital Gap 분석"
   ],
-  "primaryFeature": "Ohjunseok",
+  "primaryFeature": "anonymous-donor-default-birthdate",
   "features": {
+    "anonymous-donor-default-birthdate": {
+      "phase": "completed",
+      "phaseNumber": 5,
+      "matchRate": 100,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {
+        "plan": "docs/01-plan/features/anonymous-donor-default-birthdate.plan.md",
+        "design": "docs/02-design/features/anonymous-donor-default-birthdate.design.md",
+        "analysis": "docs/03-analysis/anonymous-donor-default-birthdate.analysis.md",
+        "report": "docs/04-report/anonymous-donor-default-birthdate.report.md"
+      },
+      "timestamps": {
+        "started": "2026-05-15T05:00:00.000Z",
+        "lastUpdated": "2026-05-15T07:00:00.000Z",
+        "completed": "2026-05-15T07:00:00.000Z"
+      },
+      "lastFile": "src/app/donate/page.tsx"
+    },
+    "donation-accounting-export": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {
+        "plan": "docs/01-plan/features/donation-accounting-export.plan.md",
+        "design": "docs/02-design/features/donation-accounting-export.design.md"
+      },
+      "timestamps": {
+        "started": "2026-05-15T00:00:00.000Z",
+        "lastUpdated": "2026-05-15T01:00:00.000Z"
+      },
+      "lastFile": "src/app/admin/donations/page.tsx"
+    },
     "Ohjunseok": {
       "phase": "do",
       "phaseNumber": 3,
@@ -52,9 +89,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-24T07:47:01.442Z",
-        "lastUpdated": "2026-05-14T00:19:21.217Z"
+        "lastUpdated": "2026-05-14T01:52:24.919Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/page.tsx"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/components/navbar.tsx"
     },
     "survey": {
       "phase": "do",
@@ -338,7 +375,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-30T03:50:33.861Z",
-        "lastUpdated": "2026-04-12T23:48:56.924Z"
+        "lastUpdated": "2026-05-15T05:27:48.880Z"
       },
       "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/donate/page.tsx"
     },
@@ -351,9 +388,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-30T05:39:04.096Z",
-        "lastUpdated": "2026-04-11T07:04:57.518Z"
+        "lastUpdated": "2026-05-15T05:26:44.486Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Ohjunseok/src/app/admin/donations/page.tsx"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/admin/donations/page.tsx"
     },
     "donate-guide": {
       "phase": "do",
@@ -482,7 +519,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-16T06:59:00.535Z",
-        "lastUpdated": "2026-04-16T07:14:08.315Z"
+        "lastUpdated": "2026-05-14T09:50:02.828Z"
       },
       "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/components/interactive-hero/index.tsx"
     },
@@ -592,7 +629,7 @@
   "session": {
     "startedAt": "2026-03-24T07:38:49.089Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-05-14T00:54:33.389Z"
+    "lastActivity": "2026-05-15T05:27:48.880Z"
   },
   "history": [
     {
@@ -2849,6 +2886,210 @@
       "timestamp": "2026-05-14T00:54:33.389Z",
       "feature": "child-hospital Gap 분석",
       "phase": "act",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:01:38.754Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:35:49.996Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:38:55.898Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:42:13.896Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:46:17.611Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:52:17.035Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:52:19.845Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:52:22.466Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:52:24.919Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T01:52:46.934Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T03:17:28.786Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T04:27:46.499Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T09:49:04.418Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T09:49:58.930Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T09:50:00.679Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-14T09:50:02.828Z",
+      "feature": "interactive-hero",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:28:40.057Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:29:09.485Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:29:24.396Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:29:41.409Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:30:02.115Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T04:30:20.257Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:25:40.756Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:25:47.540Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:25:54.720Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:05.189Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:16.180Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:32.818Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:44.486Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:51.376Z",
+      "feature": "donate",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:26:56.951Z",
+      "feature": "donate",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:27:13.317Z",
+      "feature": "donate",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:27:34.919Z",
+      "feature": "donate",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:27:48.880Z",
+      "feature": "donate",
+      "phase": "do",
       "action": "updated"
     }
   ],
