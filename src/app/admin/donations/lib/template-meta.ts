@@ -20,7 +20,7 @@ export const TEMPLATE_META = {
     fileNamePrefix: "수입지출처",
   },
   namedIncome: {
-    url: "/templates/수입내역_일괄등록_양식.xlsx",
+    url: "/templates/기명수입내역_일괄등록_양식.xlsx",
     sheetName: "수입 내역 일괄등록",
     headerRow: 5,
     dataStartRow: 6,
@@ -28,7 +28,7 @@ export const TEMPLATE_META = {
     fileNamePrefix: "수입내역_기명",
   },
   anonIncome: {
-    url: "/templates/익명수입자일괄등록_양식.xlsx",
+    url: "/templates/익명수입내역_일괄등록_양식.xlsx",
     sheetName: "수입 내역 일괄등록",
     headerRow: 1,
     dataStartRow: 2,
