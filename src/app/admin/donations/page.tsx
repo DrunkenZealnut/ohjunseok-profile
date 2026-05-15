@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { adminGet, adminPost, adminPut, adminDelete } from "@/lib/admin-fetch";
 import { Trash2, Plus, Download, X, Pencil, Search, Package } from "lucide-react";
 import {
@@ -89,8 +89,8 @@ function toCSV(rows: Donation[]): string {
 }
 
 export default function AdminDonations() {
-  const [items, setItems] = useState<Donation[]>([]);
-  const [count, setCount] = useState(0);
+  const [allData, setAllData] = useState<Donation[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -127,11 +127,10 @@ export default function AdminDonations() {
   const load = useCallback(() => {
     setLoading(true);
     setError(false);
-    adminGet(`table=donations&page=${page}`)
+    adminGet("table=donations&action=all")
       .then((res) => {
         if (res.data) {
-          setItems(res.data);
-          setCount(res.count ?? 0);
+          setAllData(res.data as Donation[]);
         } else {
           setError(true);
         }
@@ -139,11 +138,44 @@ export default function AdminDonations() {
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, refreshKey]);
+  }, [refreshKey]);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return allData;
+    return allData.filter((d) => {
+      const haystack = [
+        d.donor_name,
+        d.phone,
+        d.email ?? "",
+        d.address ?? "",
+        d.detail_address ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [allData, searchQuery]);
+
+  const count = filtered.length;
+  const totalAmount = useMemo(
+    () => filtered.reduce((sum, d) => sum + d.amount, 0),
+    [filtered]
+  );
+  const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const items = useMemo(
+    () => filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filtered, safePage]
+  );
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   function handleEdit(d: Donation) {
     setEditingId(d.id);
@@ -343,8 +375,7 @@ export default function AdminDonations() {
     }
   }
 
-  const totalPages = Math.ceil(count / PAGE_SIZE);
-  const totalAmount = items.reduce((sum, d) => sum + d.amount, 0);
+  const isSearching = searchQuery.trim().length > 0;
 
   return (
     <div>
@@ -352,10 +383,12 @@ export default function AdminDonations() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
             후원자 목록{" "}
-            <span className="text-base font-normal text-gray-400">({count}건)</span>
+            <span className="text-base font-normal text-gray-400">
+              ({count}건{isSearching && ` / 전체 ${allData.length}건`})
+            </span>
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            이 페이지 합계:{" "}
+            {isSearching ? "검색 결과 합계" : "전체 합계"}:{" "}
             <span className="font-bold text-rose-600">
               {totalAmount.toLocaleString("ko-KR")}원
             </span>
@@ -364,7 +397,7 @@ export default function AdminDonations() {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={handleDownloadExpenseSource}
-            disabled={downloading || count === 0}
+            disabled={downloading || allData.length === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
             title="회계: 수입지출처 일괄등록 양식 (기명, 중복 제거)"
           >
@@ -373,7 +406,7 @@ export default function AdminDonations() {
           </button>
           <button
             onClick={handleDownloadNamedIncome}
-            disabled={downloading || count === 0}
+            disabled={downloading || allData.length === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
             title="회계: 수입내역 일괄등록 양식 (기명)"
           >
@@ -382,7 +415,7 @@ export default function AdminDonations() {
           </button>
           <button
             onClick={handleDownloadAnonIncome}
-            disabled={downloading || count === 0}
+            disabled={downloading || allData.length === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
             title="회계: 익명수입자 일괄등록 양식 (Sheet2에 실명 백업 포함)"
           >
@@ -391,7 +424,7 @@ export default function AdminDonations() {
           </button>
           <button
             onClick={handleDownloadAll}
-            disabled={downloading || count === 0}
+            disabled={downloading || allData.length === 0}
             className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-40"
             title="3종 양식 일괄 다운로드"
           >
@@ -400,7 +433,7 @@ export default function AdminDonations() {
           </button>
           <button
             onClick={handleDownloadCSV}
-            disabled={downloading || count === 0}
+            disabled={downloading || allData.length === 0}
             className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:opacity-40"
             title="백업/검수용 CSV"
           >
@@ -420,6 +453,28 @@ export default function AdminDonations() {
             새 후원자 등록
           </button>
         </div>
+      </div>
+
+      {/* 검색 */}
+      <div className="mb-4 relative max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="이름, 전화번호, 이메일, 주소로 검색"
+          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-9 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery("")}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            aria-label="검색어 지우기"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* 테이블 */}
@@ -511,7 +566,9 @@ export default function AdminDonations() {
             {!loading && !error && items.length === 0 && (
               <tr>
                 <td colSpan={9} className="px-4 py-10 text-center text-gray-400">
-                  아직 후원 정보가 없습니다.
+                  {isSearching
+                    ? "검색 결과가 없습니다."
+                    : "아직 후원 정보가 없습니다."}
                 </td>
               </tr>
             )}
@@ -522,18 +579,18 @@ export default function AdminDonations() {
       {totalPages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-4">
           <button
-            onClick={() => setPage(page - 1)}
-            disabled={page <= 1}
+            onClick={() => setPage(safePage - 1)}
+            disabled={safePage <= 1}
             className="rounded-lg bg-gray-200 px-4 py-2 text-sm disabled:opacity-30"
           >
             이전
           </button>
           <span className="text-sm text-gray-500">
-            {page} / {totalPages}
+            {safePage} / {totalPages}
           </span>
           <button
-            onClick={() => setPage(page + 1)}
-            disabled={page >= totalPages}
+            onClick={() => setPage(safePage + 1)}
+            disabled={safePage >= totalPages}
             className="rounded-lg bg-gray-200 px-4 py-2 text-sm disabled:opacity-30"
           >
             다음
