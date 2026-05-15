@@ -30,6 +30,19 @@ function digits(s: string | null | undefined): string {
   return (s ?? "").replace(/\D/g, "");
 }
 
+// 주민번호 앞 6자리(생년월일)가 "111111"이면 익명 sentinel로 간주한다.
+// is_anonymous 컬럼이 누락/false인 과거 데이터(주민번호만 수동 정리된 케이스)도 익명으로 분류된다.
+export function isAnonymousResidentId(rid: string | null | undefined): boolean {
+  return digits(rid).slice(0, 6) === "111111";
+}
+
+export function isAnonymousDonation(
+  d: { is_anonymous?: boolean | null; resident_id?: string | null } | null | undefined,
+): boolean {
+  if (!d) return false;
+  return d.is_anonymous === true || isAnonymousResidentId(d.resident_id);
+}
+
 export function ridToBirth(rid: string): string {
   if (!rid) return "";
   const d = digits(rid);
@@ -89,7 +102,7 @@ function verifyTemplate(wb: XLSX.WorkBook, meta: TemplateMeta): void {
 
 export async function toExpenseSourceXlsx(donors: Donation[]): Promise<ArrayBuffer> {
   const meta = TEMPLATE_META.expenseSource;
-  const named = donors.filter((d) => !d.is_anonymous);
+  const named = donors.filter((d) => !isAnonymousDonation(d));
   const unique = dedupeDonors(named);
   if (unique.length === 0) {
     throw new Error("NO_DATA");
@@ -113,7 +126,7 @@ export async function toExpenseSourceXlsx(donors: Donation[]): Promise<ArrayBuff
 
 export async function toNamedIncomeXlsx(donors: Donation[]): Promise<ArrayBuffer> {
   const meta = TEMPLATE_META.namedIncome;
-  const named = donors.filter((d) => !d.is_anonymous);
+  const named = donors.filter((d) => !isAnonymousDonation(d));
   if (named.length === 0) {
     throw new Error("NO_DATA");
   }
@@ -143,7 +156,7 @@ export async function toNamedIncomeXlsx(donors: Donation[]): Promise<ArrayBuffer
 
 export async function toAnonIncomeXlsx(donors: Donation[]): Promise<ArrayBuffer> {
   const meta = TEMPLATE_META.anonIncome;
-  const anon = donors.filter((d) => d.is_anonymous);
+  const anon = donors.filter((d) => isAnonymousDonation(d));
   if (anon.length === 0) {
     throw new Error("NO_DATA");
   }

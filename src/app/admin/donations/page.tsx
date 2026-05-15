@@ -8,6 +8,7 @@ import {
   toNamedIncomeXlsx,
   toAnonIncomeXlsx,
   buildFileName,
+  isAnonymousDonation,
   ANONYMOUS_RESIDENT_ID,
   ANONYMOUS_PHONE,
   ANONYMOUS_ADDRESS,
@@ -72,7 +73,7 @@ function toCSV(rows: Donation[]): string {
   const lines = rows.map((d) =>
     [
       sanitizeCell(d.donor_name),
-      d.is_anonymous ? "익명" : "기명",
+      isAnonymousDonation(d) ? "익명" : "기명",
       sanitizeCell(d.resident_id),
       sanitizeCell(d.phone),
       sanitizeCell(d.email ?? ""),
@@ -153,7 +154,7 @@ export default function AdminDonations() {
       address: d.address,
       detail_address: d.detail_address ?? "",
       postal_code: d.postal_code ?? "",
-      is_anonymous: d.is_anonymous ?? false,
+      is_anonymous: isAnonymousDonation(d),
       email: d.email ?? "",
       amount: String(d.amount),
       deposit_date: d.deposit_date.slice(0, 10),
@@ -443,7 +444,7 @@ export default function AdminDonations() {
                 <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-800">
                   <div className="flex items-center gap-1.5">
                     {d.donor_name}
-                    {d.is_anonymous && (
+                    {isAnonymousDonation(d) && (
                       <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-500">
                         익명
                       </span>

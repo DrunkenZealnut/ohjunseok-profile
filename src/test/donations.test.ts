@@ -28,12 +28,18 @@ function sanitizeCell(value: string | number | boolean | null | undefined): stri
   return str;
 }
 
+function isAnonymousDonation(d: { is_anonymous?: boolean | null; resident_id?: string | null }): boolean {
+  if (!d) return false;
+  const ridDigits = (d.resident_id ?? "").replace(/\D/g, "");
+  return d.is_anonymous === true || ridDigits.slice(0, 6) === "111111";
+}
+
 function toCSV(rows: Donation[]): string {
   const headers = ["이름", "기명여부", "주민등록번호", "전화번호", "이메일", "우편번호", "기본주소", "상세주소", "금액", "입금일", "접수일"];
   const lines = rows.map((d) =>
     [
       sanitizeCell(d.donor_name),
-      d.is_anonymous ? "익명" : "기명",
+      isAnonymousDonation(d) ? "익명" : "기명",
       sanitizeCell(d.resident_id),
       sanitizeCell(d.phone),
       sanitizeCell(d.email ?? ""),
