@@ -14,14 +14,11 @@ import {
   ANONYMOUS_ADDRESS,
   type Donation,
 } from "./lib/donation-export";
-import {
-  toSelectedCsv,
-  toSelectedXlsx,
-  buildSelectedFileName,
-} from "./lib/donation-simple-export";
 import { TEMPLATE_META } from "./lib/template-meta";
 
 type AnonFilter = "all" | "named" | "anon";
+
+const SELECTED_FILENAME_SUFFIX = "_선택";
 
 declare global {
   interface Window {
@@ -208,6 +205,11 @@ export default function AdminDonations() {
     () => selectedRows.reduce((s, d) => s + d.amount, 0),
     [selectedRows]
   );
+  const selectedNamedCount = useMemo(
+    () => selectedRows.reduce((n, d) => n + (isAnonymousDonation(d) ? 0 : 1), 0),
+    [selectedRows]
+  );
+  const selectedAnonCount = selectedCount - selectedNamedCount;
 
   const filteredSelectedCount = useMemo(
     () => filtered.reduce((n, d) => n + (selectedIds.has(d.id) ? 1 : 0), 0),
@@ -379,31 +381,76 @@ export default function AdminDonations() {
 
   const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-  function handleExportSelectedCsv() {
-    if (selectedRows.length === 0) return;
-    try {
-      downloadBlob(
-        toSelectedCsv(selectedRows),
-        buildSelectedFileName("csv"),
-        "text/csv;charset=utf-8;"
-      );
-    } catch (err) {
-      console.error(err);
-      alert("CSV 생성 중 오류가 발생했습니다.");
-    }
+  function buildSelectedFileName(prefix: string): string {
+    const today = new Date().toISOString().slice(0, 10);
+    return `${prefix}${SELECTED_FILENAME_SUFFIX}_${today}.xlsx`;
   }
 
-  function handleExportSelectedXlsx() {
-    if (selectedRows.length === 0) return;
+  async function handleExportSelectedNamed() {
+    if (selectedNamedCount === 0) return;
+    setDownloading(true);
     try {
+      const buf = await toNamedIncomeXlsx(selectedRows);
       downloadBlob(
-        toSelectedXlsx(selectedRows),
-        buildSelectedFileName("xlsx"),
+        buf,
+        buildSelectedFileName(TEMPLATE_META.namedIncome.fileNamePrefix),
         XLSX_MIME
       );
     } catch (err) {
-      console.error(err);
-      alert("XLSX 생성 중 오류가 발생했습니다.");
+      handleXlsxError(err, "선택 수입내역(기명)");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleExportSelectedAnon() {
+    if (selectedAnonCount === 0) return;
+    setDownloading(true);
+    try {
+      const buf = await toAnonIncomeXlsx(selectedRows);
+      downloadBlob(
+        buf,
+        buildSelectedFileName(TEMPLATE_META.anonIncome.fileNamePrefix),
+        XLSX_MIME
+      );
+    } catch (err) {
+      handleXlsxError(err, "선택 익명수입자");
+    } finally {
+      setDownloading(false);
+    }
+  }
+
+  async function handleExportSelectedAll() {
+    if (selectedCount === 0) return;
+    setDownloading(true);
+    try {
+      const jobs: Array<{ name: string; run: () => Promise<ArrayBuffer>; prefix: string; available: boolean }> = [
+        {
+          name: "선택 수입내역(기명)",
+          run: () => toNamedIncomeXlsx(selectedRows),
+          prefix: TEMPLATE_META.namedIncome.fileNamePrefix,
+          available: selectedNamedCount > 0,
+        },
+        {
+          name: "선택 익명수입자",
+          run: () => toAnonIncomeXlsx(selectedRows),
+          prefix: TEMPLATE_META.anonIncome.fileNamePrefix,
+          available: selectedAnonCount > 0,
+        },
+      ];
+      for (const job of jobs) {
+        if (!job.available) continue;
+        try {
+          const buf = await job.run();
+          downloadBlob(buf, buildSelectedFileName(job.prefix), XLSX_MIME);
+        } catch (err) {
+          if (err instanceof Error && err.message === "NO_DATA") continue;
+          handleXlsxError(err, job.name);
+          return;
+        }
+      }
+    } finally {
+      setDownloading(false);
     }
   }
 
@@ -655,6 +702,9 @@ export default function AdminDonations() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-l-4 border-rose-500 bg-rose-50 px-4 py-3">
           <div className="text-sm text-gray-700">
             <span className="font-bold text-rose-700">선택 {selectedCount}건</span>
+            <span className="ml-2 text-xs text-gray-500">
+              (기명 {selectedNamedCount} · 익명 {selectedAnonCount})
+            </span>
             <span className="mx-2 text-gray-300">·</span>
             <span className="font-bold text-rose-700">
               {selectedAmount.toLocaleString("ko-KR")}원
@@ -663,24 +713,39 @@ export default function AdminDonations() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={handleExportSelectedCsv}
-              className="flex items-center gap-1.5 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-100"
+              onClick={handleExportSelectedNamed}
+              disabled={downloading || selectedNamedCount === 0}
+              className="flex items-center gap-1.5 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-40"
+              title="회계: 수입내역 일괄등록 양식 (기명, 선택 항목)"
             >
               <FileDown className="h-4 w-4" />
-              선택 항목 CSV
+              {downloading ? "..." : `수입내역(기명) XLS${selectedNamedCount > 0 ? ` · ${selectedNamedCount}` : ""}`}
             </button>
             <button
               type="button"
-              onClick={handleExportSelectedXlsx}
-              className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-rose-700"
+              onClick={handleExportSelectedAnon}
+              disabled={downloading || selectedAnonCount === 0}
+              className="flex items-center gap-1.5 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-40"
+              title="회계: 익명수입자 일괄등록 양식 (Sheet2 실명 백업 포함, 선택 항목)"
             >
               <FileDown className="h-4 w-4" />
-              선택 항목 XLSX
+              {downloading ? "..." : `익명수입자 XLS${selectedAnonCount > 0 ? ` · ${selectedAnonCount}` : ""}`}
+            </button>
+            <button
+              type="button"
+              onClick={handleExportSelectedAll}
+              disabled={downloading}
+              className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-50"
+              title="선택 항목을 기명/익명 두 양식으로 일괄 다운로드"
+            >
+              <Package className="h-4 w-4" />
+              {downloading ? "..." : "일괄"}
             </button>
             <button
               type="button"
               onClick={clearSelection}
-              className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+              disabled={downloading}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed"
             >
               <XCircle className="h-4 w-4" />
               선택 해제
