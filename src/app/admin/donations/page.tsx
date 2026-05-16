@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { adminGet, adminPost, adminPut, adminDelete } from "@/lib/admin-fetch";
-import { Trash2, Plus, Download, X, Pencil, Search, Package } from "lucide-react";
+import { Trash2, Plus, Download, X, Pencil, Search, Package, FileDown, XCircle } from "lucide-react";
 import {
   toExpenseSourceXlsx,
   toNamedIncomeXlsx,
@@ -14,7 +14,14 @@ import {
   ANONYMOUS_ADDRESS,
   type Donation,
 } from "./lib/donation-export";
+import {
+  toSelectedCsv,
+  toSelectedXlsx,
+  buildSelectedFileName,
+} from "./lib/donation-simple-export";
 import { TEMPLATE_META } from "./lib/template-meta";
+
+type AnonFilter = "all" | "named" | "anon";
 
 declare global {
   interface Window {
@@ -91,10 +98,15 @@ function toCSV(rows: Donation[]): string {
 export default function AdminDonations() {
   const [allData, setAllData] = useState<Donation[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [anonFilter, setAnonFilter] = useState<AnonFilter>("all");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const headerCheckboxRef = useRef<HTMLInputElement>(null);
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -146,20 +158,30 @@ export default function AdminDonations() {
 
   const filtered = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return allData;
     return allData.filter((d) => {
-      const haystack = [
-        d.donor_name,
-        d.phone,
-        d.email ?? "",
-        d.address ?? "",
-        d.detail_address ?? "",
-      ]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(q);
+      const ymd = d.deposit_date.slice(0, 10);
+      if (dateFrom && ymd < dateFrom) return false;
+      if (dateTo && ymd > dateTo) return false;
+      if (anonFilter !== "all") {
+        const isAnon = isAnonymousDonation(d);
+        if (anonFilter === "anon" && !isAnon) return false;
+        if (anonFilter === "named" && isAnon) return false;
+      }
+      if (q) {
+        const haystack = [
+          d.donor_name,
+          d.phone,
+          d.email ?? "",
+          d.address ?? "",
+          d.detail_address ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      return true;
     });
-  }, [allData, searchQuery]);
+  }, [allData, searchQuery, dateFrom, dateTo, anonFilter]);
 
   const count = filtered.length;
   const totalAmount = useMemo(
@@ -175,7 +197,68 @@ export default function AdminDonations() {
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, dateFrom, dateTo, anonFilter]);
+
+  const selectedRows = useMemo(
+    () => allData.filter((d) => selectedIds.has(d.id)),
+    [allData, selectedIds]
+  );
+  const selectedCount = selectedRows.length;
+  const selectedAmount = useMemo(
+    () => selectedRows.reduce((s, d) => s + d.amount, 0),
+    [selectedRows]
+  );
+
+  const filteredSelectedCount = useMemo(
+    () => filtered.reduce((n, d) => n + (selectedIds.has(d.id) ? 1 : 0), 0),
+    [filtered, selectedIds]
+  );
+  const headerCheckState: "all" | "some" | "none" =
+    filtered.length === 0
+      ? "none"
+      : filteredSelectedCount === 0
+      ? "none"
+      : filteredSelectedCount === filtered.length
+      ? "all"
+      : "some";
+
+  useEffect(() => {
+    if (headerCheckboxRef.current) {
+      headerCheckboxRef.current.indeterminate = headerCheckState === "some";
+    }
+  }, [headerCheckState]);
+
+  function toggleOne(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAllFiltered() {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      const shouldSelect = headerCheckState !== "all";
+      for (const d of filtered) {
+        if (shouldSelect) next.add(d.id);
+        else next.delete(d.id);
+      }
+      return next;
+    });
+  }
+
+  function clearSelection() {
+    setSelectedIds(new Set());
+  }
+
+  function resetFilters() {
+    setSearchQuery("");
+    setDateFrom("");
+    setDateTo("");
+    setAnonFilter("all");
+  }
 
   function handleEdit(d: Donation) {
     setEditingId(d.id);
@@ -296,6 +379,34 @@ export default function AdminDonations() {
 
   const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
+  function handleExportSelectedCsv() {
+    if (selectedRows.length === 0) return;
+    try {
+      downloadBlob(
+        toSelectedCsv(selectedRows),
+        buildSelectedFileName("csv"),
+        "text/csv;charset=utf-8;"
+      );
+    } catch (err) {
+      console.error(err);
+      alert("CSV 생성 중 오류가 발생했습니다.");
+    }
+  }
+
+  function handleExportSelectedXlsx() {
+    if (selectedRows.length === 0) return;
+    try {
+      downloadBlob(
+        toSelectedXlsx(selectedRows),
+        buildSelectedFileName("xlsx"),
+        XLSX_MIME
+      );
+    } catch (err) {
+      console.error(err);
+      alert("XLSX 생성 중 오류가 발생했습니다.");
+    }
+  }
+
   function handleXlsxError(err: unknown, kind: string) {
     if (err instanceof Error && err.message === "NO_DATA") {
       alert(`${kind}: 내보낼 데이터가 없습니다.`);
@@ -375,7 +486,11 @@ export default function AdminDonations() {
     }
   }
 
-  const isSearching = searchQuery.trim().length > 0;
+  const hasActiveFilter =
+    searchQuery.trim().length > 0 ||
+    dateFrom !== "" ||
+    dateTo !== "" ||
+    anonFilter !== "all";
 
   return (
     <div>
@@ -384,11 +499,11 @@ export default function AdminDonations() {
           <h1 className="text-2xl font-bold text-gray-800">
             후원자 목록{" "}
             <span className="text-base font-normal text-gray-400">
-              ({count}건{isSearching && ` / 전체 ${allData.length}건`})
+              ({count}건{hasActiveFilter && ` / 전체 ${allData.length}건`})
             </span>
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            {isSearching ? "검색 결과 합계" : "전체 합계"}:{" "}
+            {hasActiveFilter ? "필터 결과 합계" : "전체 합계"}:{" "}
             <span className="font-bold text-rose-600">
               {totalAmount.toLocaleString("ko-KR")}원
             </span>
@@ -455,33 +570,141 @@ export default function AdminDonations() {
         </div>
       </div>
 
-      {/* 검색 */}
-      <div className="mb-4 relative max-w-md">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="이름, 전화번호, 이메일, 주소로 검색"
-          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-9 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            aria-label="검색어 지우기"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
+      {/* 필터 바 */}
+      <div className="mb-4 rounded-xl bg-white p-4 shadow-sm">
+        <div className="flex flex-wrap items-end gap-3">
+          {/* 날짜 범위 */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-xs font-medium text-gray-500">입금일 시작</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-xs font-medium text-gray-500">입금일 종료</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
+            />
+          </div>
+
+          {/* 기명/익명 3-way */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-xs font-medium text-gray-500">유형</label>
+            <div className="inline-flex rounded-lg border border-gray-300 bg-white p-0.5 text-sm">
+              {(["all", "named", "anon"] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => setAnonFilter(v)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                    anonFilter === v
+                      ? "bg-rose-600 text-white"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {v === "all" ? "전체" : v === "named" ? "기명" : "익명"}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 텍스트 검색 */}
+          <div className="relative min-w-[240px] flex-1">
+            <label className="mb-1 block text-xs font-medium text-gray-500">검색</label>
+            <Search className="pointer-events-none absolute left-3 top-[34px] h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="이름, 전화번호, 이메일, 주소"
+              className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-9 text-sm focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-[34px] -translate-y-1/2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                aria-label="검색어 지우기"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          {/* 필터 초기화 */}
+          {(dateFrom || dateTo || anonFilter !== "all" || searchQuery) && (
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="self-end rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50"
+            >
+              필터 초기화
+            </button>
+          )}
+        </div>
       </div>
+
+      {/* 선택 상태 바 */}
+      {selectedCount > 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-l-4 border-rose-500 bg-rose-50 px-4 py-3">
+          <div className="text-sm text-gray-700">
+            <span className="font-bold text-rose-700">선택 {selectedCount}건</span>
+            <span className="mx-2 text-gray-300">·</span>
+            <span className="font-bold text-rose-700">
+              {selectedAmount.toLocaleString("ko-KR")}원
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={handleExportSelectedCsv}
+              className="flex items-center gap-1.5 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-100"
+            >
+              <FileDown className="h-4 w-4" />
+              선택 항목 CSV
+            </button>
+            <button
+              type="button"
+              onClick={handleExportSelectedXlsx}
+              className="flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm transition hover:bg-rose-700"
+            >
+              <FileDown className="h-4 w-4" />
+              선택 항목 XLSX
+            </button>
+            <button
+              type="button"
+              onClick={clearSelection}
+              className="flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
+            >
+              <XCircle className="h-4 w-4" />
+              선택 해제
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 테이블 */}
       <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b bg-gray-50 text-xs font-semibold uppercase text-gray-500">
+              <th className="w-10 px-3 py-3">
+                <input
+                  ref={headerCheckboxRef}
+                  type="checkbox"
+                  checked={headerCheckState === "all"}
+                  disabled={filtered.length === 0}
+                  onChange={toggleAllFiltered}
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-rose-600 focus:ring-rose-500 disabled:cursor-not-allowed"
+                  aria-label="필터된 전체 선택"
+                />
+              </th>
               <th className="px-4 py-3">이름</th>
               <th className="px-4 py-3">주민등록번호</th>
               <th className="px-4 py-3">전화번호</th>
@@ -494,8 +717,22 @@ export default function AdminDonations() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {items.map((d) => (
-              <tr key={d.id} className="hover:bg-gray-50">
+            {items.map((d) => {
+              const isSelected = selectedIds.has(d.id);
+              return (
+              <tr
+                key={d.id}
+                className={isSelected ? "bg-rose-50 hover:bg-rose-100" : "hover:bg-gray-50"}
+              >
+                <td className="w-10 px-3 py-3">
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleOne(d.id)}
+                    className="h-4 w-4 cursor-pointer rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+                    aria-label={`${d.donor_name} 선택`}
+                  />
+                </td>
                 <td className="whitespace-nowrap px-4 py-3 font-medium text-gray-800">
                   <div className="flex items-center gap-1.5">
                     {d.donor_name}
@@ -548,26 +785,27 @@ export default function AdminDonations() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {loading && (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-gray-400">
+                <td colSpan={10} className="px-4 py-10 text-center text-gray-400">
                   불러오는 중...
                 </td>
               </tr>
             )}
             {!loading && error && (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-red-400">
+                <td colSpan={10} className="px-4 py-10 text-center text-red-400">
                   데이터를 불러오지 못했습니다. 새로고침 해주세요.
                 </td>
               </tr>
             )}
             {!loading && !error && items.length === 0 && (
               <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-gray-400">
-                  {isSearching
-                    ? "검색 결과가 없습니다."
+                <td colSpan={10} className="px-4 py-10 text-center text-gray-400">
+                  {hasActiveFilter
+                    ? "조건에 맞는 후원자가 없습니다."
                     : "아직 후원 정보가 없습니다."}
                 </td>
               </tr>
