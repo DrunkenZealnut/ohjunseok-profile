@@ -25,10 +25,17 @@ export default function Footer() {
       </nav>
 
       <p className="text-sm text-white/60">
-        <strong className="text-white">진보당</strong> 이문동 구의원 후보{" "}
-        <strong className="text-white">오준석</strong>
+        <strong className="text-white">기호 5번 진보당</strong> 이문동 구의원
+        후보 <strong className="text-white">오준석</strong>
       </p>
-      <p className="mt-2 text-sm text-white/60">주민과 함께 일해온 사람</p>
+      <p className="mt-2 text-sm text-white/60">우리 동네 육아 해결사!</p>
+
+      <p className="mx-auto mt-6 max-w-xl text-xs leading-relaxed text-white/40">
+        본 게시물은 공직선거법 제65조에 따라 작성된 자료를 기반으로 합니다.
+        <br />
+        후보자 정보는 공식 책자형 선거공보(2026.05.19 등록)를 정본으로
+        합니다.
+      </p>
     </footer>
   );
 }

@@ -1,7 +1,9 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-05-15T05:27:48.880Z",
+  "lastUpdated": "2026-05-24T11:02:28.655Z",
   "activeFeatures": [
+    "official-pamphlet-mainpage",
+    "donor-search-export",
     "anonymous-donor-default-birthdate",
     "donation-accounting-export",
     "Ohjunseok",
@@ -43,8 +45,57 @@
     "child-hospital",
     "child-hospital Gap 분석"
   ],
-  "primaryFeature": "anonymous-donor-default-birthdate",
+  "primaryFeature": "official-pamphlet-mainpage",
   "features": {
+    "official-pamphlet-mainpage": {
+      "phase": "completed",
+      "phaseNumber": 5,
+      "matchRate": 96,
+      "iterationCount": 0,
+      "startedAt": "2026-05-21T00:00:00.000Z",
+      "lastUpdated": "2026-05-24T15:00:00.000Z",
+      "completedAt": "2026-05-24T15:00:00.000Z",
+      "analysisDoc": "docs/03-analysis/official-pamphlet-mainpage.analysis.md",
+      "reportDoc": "docs/04-report/official-pamphlet-mainpage.report.md",
+      "planDoc": "docs/01-plan/features/official-pamphlet-mainpage.plan.md",
+      "designDoc": "docs/02-design/features/official-pamphlet-mainpage.design.md",
+      "source": "data/오준석 책자형 선거공보(8p)_점자공보물.pdf",
+      "decisions": {
+        "oedae-photo": "public/pamphlet/oedae-station.jpg (from child_hospital/외대역_달빛서명.jpg)",
+        "negative-framing": "permanently-excluded",
+        "og-image": "split-to-separate-pdca:og-image-2026"
+      },
+      "implementedFiles": [
+        "src/data/pamphlet.ts",
+        "src/components/profile.tsx",
+        "src/components/story.tsx",
+        "src/components/pledges.tsx",
+        "src/components/home-action-cards.tsx",
+        "src/components/footer.tsx",
+        "src/app/page.tsx",
+        "src/app/layout.tsx",
+        "public/pamphlet/oedae-station.jpg"
+      ],
+      "buildStatus": "success",
+      "buildSize": "6.41 kB (page /)"
+    },
+    "donor-search-export": {
+      "phase": "completed",
+      "phaseNumber": 5,
+      "matchRate": 100,
+      "iterationCount": 0,
+      "startedAt": "2026-05-16T00:00:00.000Z",
+      "lastUpdated": "2026-05-16T00:00:00.000Z",
+      "completedAt": "2026-05-16T00:00:00.000Z",
+      "planDoc": "docs/01-plan/features/donor-search-export.plan.md",
+      "designDoc": "docs/02-design/features/donor-search-export.design.md",
+      "analysisDoc": "docs/03-analysis/donor-search-export.analysis.md",
+      "reportDoc": "docs/04-report/donor-search-export.report.md",
+      "implementedFiles": [
+        "src/app/admin/donations/lib/donation-simple-export.ts",
+        "src/app/admin/donations/page.tsx"
+      ]
+    },
     "anonymous-donor-default-birthdate": {
       "phase": "completed",
       "phaseNumber": 5,
@@ -89,9 +140,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-24T07:47:01.442Z",
-        "lastUpdated": "2026-05-14T01:52:24.919Z"
+        "lastUpdated": "2026-05-24T11:02:28.655Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/components/navbar.tsx"
+      "lastFile": "/Users/zealnutkim/DEV/Election2026/Ohjunseok/src/components/pledges.tsx"
     },
     "survey": {
       "phase": "do",
@@ -297,9 +348,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-28T15:06:56.891Z",
-        "lastUpdated": "2026-05-14T00:17:47.861Z"
+        "lastUpdated": "2026-05-24T11:01:23.673Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/data/child-hospital.ts"
+      "lastFile": "/Users/zealnutkim/DEV/Election2026/Ohjunseok/src/data/pamphlet.ts"
     },
     "admin": {
       "phase": "do",
@@ -388,7 +439,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-30T05:39:04.096Z",
-        "lastUpdated": "2026-05-15T05:26:44.486Z"
+        "lastUpdated": "2026-05-16T14:37:12.730Z"
       },
       "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/app/admin/donations/page.tsx"
     },
@@ -493,9 +544,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-11T03:48:58.407Z",
-        "lastUpdated": "2026-04-11T06:11:35.352Z"
+        "lastUpdated": "2026-05-15T05:55:05.816Z"
       },
-      "lastFile": "/Users/zealnutkim/Documents/DEV/Ohjunseok/src/test/donations.test.ts"
+      "lastFile": "/Users/zealnutkim/Documents/DEV/Election2026/Ohjunseok/src/test/donations.test.ts"
     },
     "postal": {
       "phase": "do",
@@ -629,7 +680,7 @@
   "session": {
     "startedAt": "2026-03-24T07:38:49.089Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-05-15T05:27:48.880Z"
+    "lastActivity": "2026-05-24T11:02:28.655Z"
   },
   "history": [
     {
@@ -3089,6 +3140,300 @@
     {
       "timestamp": "2026-05-15T05:27:48.880Z",
       "feature": "donate",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:53:34.974Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:53:43.567Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:53:48.388Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:53:53.714Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:54:01.439Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:54:07.012Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:54:15.579Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:54:29.524Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:55:05.816Z",
+      "feature": "test",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T05:58:37.866Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:43:29.009Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:43:35.902Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:43:45.471Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:43:54.499Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:44:03.252Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:44:10.602Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:44:33.759Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-15T06:44:39.620Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:19:58.419Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:20:14.665Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:20:22.546Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:20:41.017Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:20:58.787Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:21:27.733Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:21:39.451Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:21:48.153Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:22:05.952Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:22:15.580Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:22:21.116Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T12:22:26.931Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T14:36:05.314Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T14:36:13.495Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T14:36:29.396Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-16T14:37:12.730Z",
+      "feature": "donations",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:18:08.379Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:18:28.894Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:18:47.022Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:19:17.020Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:19:37.299Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:19:49.179Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:19:56.145Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T10:20:04.743Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:00:56.574Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:01:06.294Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:01:23.673Z",
+      "feature": "data",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:01:39.002Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:01:45.892Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:02:10.501Z",
+      "feature": "Ohjunseok",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-24T11:02:28.655Z",
+      "feature": "Ohjunseok",
       "phase": "do",
       "action": "updated"
     }

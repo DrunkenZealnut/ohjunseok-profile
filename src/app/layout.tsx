@@ -12,12 +12,12 @@ const notoSansKR = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "오준석 | 진보당 이문동 구의원 후보",
+  title: "오준석 | 기호 5번 진보당 이문동 구의원 후보",
   description:
-    "주민과 함께 일해온 사람, 진보당 이문동 구의원 후보 오준석입니다.",
+    "우리 동네 육아 해결사! 세 아이를 키우는 아빠, 주민 3,025명과 함께 달빛어린이병원을 요구한 사람. 기호 5번 진보당 오준석.",
   openGraph: {
-    title: "오준석 | 진보당 이문동 구의원 후보",
-    description: "주민과 함께 일해온 사람",
+    title: "오준석 | 기호 5번 진보당 이문동 구의원 후보",
+    description: "우리 동네 육아 해결사!",
     type: "website",
     locale: "ko_KR",
   },

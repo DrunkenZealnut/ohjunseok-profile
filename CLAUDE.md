@@ -1,4 +1,5 @@
 @AGENTS.md
+@.impeccable.md
 
 ## Skill routing
 
